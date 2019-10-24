@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+   <children>
+      <VBox prefHeight="720.0" prefWidth="100.0" style="-fx-background-color: #4A148C;" stylesheets="@../css/fullpackstyling.css">
+         <children>
+            <Button contentDisplay="BOTTOM" mnemonicParsing="false" prefHeight="89.0" prefWidth="100.0" styleClass="button3" stylesheets="@../css/fullpackstyling.css" text="HOME" textFill="WHITE">
+               <graphic>
+                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../resources/home.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <font>
+                  <Font name="MS Reference Sans Serif" size="18.0" />
+               </font>
+               <VBox.margin>
+                  <Insets top="227.0" />
+               </VBox.margin>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+            </Button>
+            <Button fx:id="exit" contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#close" prefHeight="89.0" prefWidth="100.0" styleClass="button3" stylesheets="@../css/fullpackstyling.css" text="HELP" textFill="WHITE">
+               <graphic>
+                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../resources/help.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <font>
+                  <Font name="MS Reference Sans Serif" size="18.0" />
+               </font>
+            </Button>
+            <Button fx:id="button" contentDisplay="BOTTOM" mnemonicParsing="false" prefHeight="87.0" prefWidth="100.0" styleClass="button3" text="ABOUT" textFill="WHITE">
+               <font>
+                  <Font name="MS Reference Sans Serif" size="18.0" />
+               </font>
+               <graphic>
+                  <ImageView fitHeight="48.0" fitWidth="52.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../resources/about.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+         </children>
+      </VBox>
+      <VBox layoutX="119.0" layoutY="110.0" prefHeight="590.0" prefWidth="1150.0" style="-fx-background-color: #4A148C;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="111.0" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="70.0" />
+   </children>
+</AnchorPane>
