@@ -21,7 +21,7 @@ public class Controller {
     private Button button;
     @FXML
     private Label textToWriteLabel;
-    private String tekst = "siema";
+    private String tekst = "siema Byku";
 
 
     public void setTeksto(ActionEvent event)throws IOException{
