@@ -8,6 +8,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
@@ -18,7 +19,15 @@ import static javafx.event.ActionEvent.ACTION;
 
 public class Controller {
     private Button button;
+    @FXML
+    private Label textToWriteLabel;
+    private String tekst = "siema";
 
+
+    public void setTeksto(ActionEvent event)throws IOException{
+        //System.out.println("przycisk dziala");
+        textToWriteLabel.setText(tekst);
+    }
     @FXML
     private void switchToPractice(ActionEvent event)throws IOException {
         Parent view2 = FXMLLoader.load(getClass().getResource("fxml/Practice.fxml"));
