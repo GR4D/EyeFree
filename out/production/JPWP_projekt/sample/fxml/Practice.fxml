@@ -90,6 +90,7 @@
             <TextArea fx:id="textInputField" layoutX="436.0" layoutY="231.0" onKeyTyped="#keyPressed" prefHeight="45.0" prefWidth="308.0" />
             <Label fx:id="textToWriteLabel" layoutX="244.0" layoutY="75.0" prefHeight="87.0" prefWidth="705.0" style="-fx-background-color: #ffffff;" text="byk" />
             <Button layoutX="208.0" layoutY="231.0" mnemonicParsing="false" onAction="#setTeksto" prefHeight="28.0" prefWidth="73.0" text="chuj" />
+            <Label fx:id="testLabel" layoutX="313.0" layoutY="352.0" prefHeight="45.0" prefWidth="758.0" style="-fx-background-color: #ffffff;" />
          </children>
       </Pane>
    </children>
