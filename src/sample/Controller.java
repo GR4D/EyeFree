@@ -13,6 +13,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 
@@ -32,7 +34,7 @@ public class Controller {
     @FXML
     private TextArea textInputField;
     @FXML
-    private TextArea textToWriteLabel;
+    private TextFlow textToWriteLabel;
     //private Label textToWriteLabel;
     @FXML
     private Label testLabel;
@@ -48,7 +50,9 @@ public class Controller {
     private int letterError = 0;
     private boolean isBackspaceKey = false;
     private int currentPositionLeft, currentPositionRight = 0;
-   // private int currentPositionRight = 0;
+    private Text[] t;
+    private boolean mistake = false;
+    private int mistakeCounter = 0;
 
     @FXML
     public void isBackspace(KeyEvent e){
@@ -71,8 +75,11 @@ public class Controller {
                 textInputField.deletePreviousChar();
 
 
-                //textToWriteLabel.select
+//              t[5].setFill(Color.RED);
 
+                //textToWriteLabel.select
+                if( wordCounter+1 < newContent.length)
+                    t[wordCounter+1].setFill(Color.BLUE);
 
                 //System.out.println("x: "+currentPositionLeft+ " y: "+currentPositionRight);
                 if (wordCounter != newContent.length) {
@@ -80,21 +87,25 @@ public class Controller {
                     if (textInputField.getText().equals(newContent[wordCounter])) {
                         System.out.println("zgadza sie");
                         goodWords++;
+                        t[wordCounter].setFill(Color.GREEN);
                         wordCounter++;
                     } else {
                         System.out.println("nie zgadza sie");
                         errorWords++;
+                        t[wordCounter].setFill(Color.RED);
                         wordCounter++;
+
 //               currentLetterWord = newContent[wordCounter].toCharArray();
                     }
                     //wordCounter++;
+                    mistakeCounter = 0;
+                    mistake = false;
                     textInputField.clear();
                     letterCounter = 0;
                     if (wordCounter != newContent.length) {
                         currentPositionLeft = currentPositionRight +1 ;
                         currentLetterWord = newContent[wordCounter].toCharArray();
                         currentPositionRight += currentLetterWord.length +1;
-
                     }
 
                 }
@@ -112,28 +123,60 @@ public class Controller {
                 System.out.println("litera: " + currentLetterWord[letterCounter]);
 
                 if (e.getCharacter().charAt(0) == currentLetterWord[letterCounter] & !isSpaceChar(e.getCharacter().charAt(0))) {
-                    System.out.println("ruwna sie ta litera");
-                    letterGood++;
+                    if(!mistake){
+                        System.out.println("ruwna sie ta litera");
+                        t[wordCounter].setFill(Color.BLUE);
+
+                        letterGood++;
+                    }
                 } else if (e.getCharacter().charAt(0) != currentLetterWord[letterCounter] & !isSpaceChar(e.getCharacter().charAt(0))) {
                     System.out.println("nieruwna sie ta litera");
+                    t[wordCounter].setFill(Color.RED);
                     letterError++;
+                    mistake = true;
+                    mistakeCounter++;
                 }
+
                 if (!isSpaceChar(e.getCharacter().charAt(0)))
                     letterCounter++;
             }
-
+        }else{
+            if(mistake)
+                mistakeCounter--;
+            if(mistake == true & mistakeCounter == 0)
+                t[wordCounter].setFill(Color.BLUE);
         }
+
     }
 
     public void loadTekst()throws IOException{
         wordCounter = 0;
         //textToWriteLabel.setStyle("-fx-highlight-fill: blue; -fx-highlight-text-fill: firebrick; -fx-font-size: 20px;");
         try{
+
             String content = new String(Files.readAllBytes(Paths.get("src/sample/slowa.txt")));
             newContent = content.split(" ");
             currentLetterWord = newContent[wordCounter].toCharArray();
-            textToWriteLabel.setText(content);
+            t = new Text[newContent.length];
+
+
+
+            for (int i = 0; i < newContent.length; i++) {
+                t[i] = new Text(newContent[i]+" ");
+                textToWriteLabel.getChildren().add(t[i]);
+                t[i].setFill(Color.WHITE);
+
+            }
+            //textToWriteLabel.setStyle("-fx-font-size: 25px; ");
+            t[0].setFill(Color.BLUE);
+
+
+
+
+            System.out.println("CHUJU JEBANY: "+newContent[0]+ "chuj: "+t[0].getText());
+
             currentPositionRight = currentLetterWord.length;
+//            textToWriteLabel.getChildren().addAll(t);
 
             System.out.println("Poprawnie załadowano plik.");
         }
