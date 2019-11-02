@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.paint.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.TextFlow?>
 
-<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <children>
       <VBox prefHeight="720.0" prefWidth="100.0" style="-fx-background-color: #393351;" stylesheets="@../../css/fullpackstyling.css">
          <children>
@@ -82,9 +90,10 @@
       <Pane layoutX="100.0" prefHeight="720.0" prefWidth="1180.0" style="-fx-background-color: #2F2B43;">
          <children>
             <TextArea fx:id="textInputField" layoutX="436.0" layoutY="231.0" onKeyPressed="#isBackspace" onKeyTyped="#keyPressed" prefHeight="45.0" prefWidth="308.0" />
-            <Label fx:id="textToWriteLabel" layoutX="244.0" layoutY="75.0" prefHeight="87.0" prefWidth="705.0" style="-fx-background-color: #ffffff;" text="byk" />
             <Button layoutX="208.0" layoutY="231.0" mnemonicParsing="false" onAction="#setTeksto" prefHeight="28.0" prefWidth="73.0" text="slowa" />
             <Label fx:id="testLabel" layoutX="313.0" layoutY="352.0" prefHeight="45.0" prefWidth="758.0" style="-fx-background-color: #ffffff;" />
+            <TextArea fx:id="textToWriteLabel" editable="false" layoutX="220.0" layoutY="81.0" prefHeight="73.0" prefWidth="714.0" wrapText="true" />
+            <TextFlow layoutX="577.0" layoutY="450.0" prefHeight="87.0" prefWidth="200.0" />
          </children>
       </Pane>
    </children>

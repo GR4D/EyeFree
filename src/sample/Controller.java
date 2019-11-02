@@ -13,12 +13,16 @@ import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 
+
+//import javax.swing.text.Style;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.SQLOutput;
+import java.util.Arrays;
 
 import static java.lang.Character.*;
 import static javafx.event.ActionEvent.ACTION;
@@ -28,7 +32,8 @@ public class Controller {
     @FXML
     private TextArea textInputField;
     @FXML
-    private Label textToWriteLabel;
+    private TextArea textToWriteLabel;
+    //private Label textToWriteLabel;
     @FXML
     private Label testLabel;
 
@@ -42,6 +47,8 @@ public class Controller {
     private int letterGood = 0;
     private int letterError = 0;
     private boolean isBackspaceKey = false;
+    private int currentPositionLeft, currentPositionRight = 0;
+   // private int currentPositionRight = 0;
 
     @FXML
     public void isBackspace(KeyEvent e){
@@ -56,14 +63,18 @@ public class Controller {
             isBackspaceKey = false;
         }
     }
-
     @FXML
     public void keyPressed(KeyEvent e) {
         if (!isBackspaceKey) {
             if (isSpaceChar(e.getCharacter().charAt(0))) {    //jezeli spacja to koniec słowa i sprawdzenie poprawnosci
-
+                //textToWriteLabel.selectRange(currentPositionLeft,currentPositionRight);
                 textInputField.deletePreviousChar();
 
+
+                //textToWriteLabel.select
+
+
+                //System.out.println("x: "+currentPositionLeft+ " y: "+currentPositionRight);
                 if (wordCounter != newContent.length) {
 
                     if (textInputField.getText().equals(newContent[wordCounter])) {
@@ -80,7 +91,10 @@ public class Controller {
                     textInputField.clear();
                     letterCounter = 0;
                     if (wordCounter != newContent.length) {
+                        currentPositionLeft = currentPositionRight +1 ;
                         currentLetterWord = newContent[wordCounter].toCharArray();
+                        currentPositionRight += currentLetterWord.length +1;
+
                     }
 
                 }
@@ -113,12 +127,14 @@ public class Controller {
 
     public void loadTekst()throws IOException{
         wordCounter = 0;
-
+        //textToWriteLabel.setStyle("-fx-highlight-fill: blue; -fx-highlight-text-fill: firebrick; -fx-font-size: 20px;");
         try{
             String content = new String(Files.readAllBytes(Paths.get("src/sample/slowa.txt")));
             newContent = content.split(" ");
             currentLetterWord = newContent[wordCounter].toCharArray();
             textToWriteLabel.setText(content);
+            currentPositionRight = currentLetterWord.length;
+
             System.out.println("Poprawnie załadowano plik.");
         }
         catch(IOException e){
@@ -129,6 +145,7 @@ public class Controller {
 
     public void setTeksto(ActionEvent event)throws IOException{
         loadTekst();
+        //textToWriteLabel.selectNextWord();
     }
 
     @FXML
