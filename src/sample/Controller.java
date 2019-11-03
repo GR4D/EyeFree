@@ -35,7 +35,6 @@ public class Controller {
     private TextArea textInputField;
     @FXML
     private TextFlow textToWriteLabel;
-    //private Label textToWriteLabel;
     @FXML
     private Label testLabel;
 
@@ -53,20 +52,22 @@ public class Controller {
     private Text[] t;
     private boolean mistake = false;
     private int mistakeCounter = 0;
+    private boolean isStarted = false;
 
     @FXML
-    public void isBackspace(KeyEvent e){
-        if(e.getCode() == KeyCode.BACK_SPACE){
+    public void isBackspace(KeyEvent e) {
+        if (e.getCode() == KeyCode.BACK_SPACE) {
             //System.out.println("Backspace chuj");
             isBackspaceKey = true;
-            if(letterCounter != 0){
+            if (letterCounter != 0) {
                 letterCounter--;
             }
-        }else{
+        } else {
             //System.out.println("Nie jest to backsapce");
             isBackspaceKey = false;
         }
     }
+
     @FXML
     public void keyPressed(KeyEvent e) {
         if (!isBackspaceKey) {
@@ -78,8 +79,8 @@ public class Controller {
 //              t[5].setFill(Color.RED);
 
                 //textToWriteLabel.select
-                if( wordCounter+1 < newContent.length)
-                    t[wordCounter+1].setFill(Color.BLUE);
+                if (wordCounter + 1 < newContent.length)
+                    t[wordCounter + 1].setFill(Color.YELLOW);
 
                 //System.out.println("x: "+currentPositionLeft+ " y: "+currentPositionRight);
                 if (wordCounter != newContent.length) {
@@ -103,29 +104,27 @@ public class Controller {
                     textInputField.clear();
                     letterCounter = 0;
                     if (wordCounter != newContent.length) {
-                        currentPositionLeft = currentPositionRight +1 ;
+                        currentPositionLeft = currentPositionRight + 1;
                         currentLetterWord = newContent[wordCounter].toCharArray();
-                        currentPositionRight += currentLetterWord.length +1;
+                        currentPositionRight += currentLetterWord.length + 1;
                     }
-
                 }
-                //System.out.println(Character.isSpaceChar(e.getCharacter().charAt(0))); //Wykrywanie spacji
 
-                if (wordCounter == newContent.length) {
-                    testLabel.setText("Koniec wpisywania! Poprawnych słów: " + goodWords + " Błędnych słów: " + errorWords +  " Popełnionych błędów: " + letterError);
+                if (wordCounter == newContent.length) { // koniec wpisywania
+                    textInputField.setEditable(false);
+                    testLabel.setText("Koniec wpisywania! Poprawnych słów: " + goodWords + " Błędnych słów: " + errorWords);
                     System.out.println("Koniec dddddddddddddddddddddd");
                     System.out.println("Poprawnych słów: " + goodWords);
                     System.out.println("Błędnych słów: " + errorWords);
-                    System.out.println("Popełnionych błędów: " + letterError);
                 }
-            }/////////////////////////////////////////////////////////////////////////////
+            }
             if (wordCounter != newContent.length & letterCounter < currentLetterWord.length) {
                 System.out.println("litera: " + currentLetterWord[letterCounter]);
 
                 if (e.getCharacter().charAt(0) == currentLetterWord[letterCounter] & !isSpaceChar(e.getCharacter().charAt(0))) {
-                    if(!mistake){
+                    if (!mistake) {
                         System.out.println("ruwna sie ta litera");
-                        t[wordCounter].setFill(Color.BLUE);
+                        t[wordCounter].setFill(Color.YELLOW);
 
                         letterGood++;
                     }
@@ -140,122 +139,117 @@ public class Controller {
                 if (!isSpaceChar(e.getCharacter().charAt(0)))
                     letterCounter++;
             }
-        }else{
-            if(mistake)
+        } else {
+            if (mistake){
                 mistakeCounter--;
-            if(mistake == true & mistakeCounter == 0)
-                t[wordCounter].setFill(Color.BLUE);
+                if(mistakeCounter == 0)
+                    t[wordCounter].setFill(Color.YELLOW);
+            }
         }
-
     }
 
-    public void loadTekst()throws IOException{
+    public void loadTekst() throws IOException {
         wordCounter = 0;
+        letterCounter = 0;
+        textToWriteLabel.getChildren().clear();
         //textToWriteLabel.setStyle("-fx-highlight-fill: blue; -fx-highlight-text-fill: firebrick; -fx-font-size: 20px;");
-        try{
+        try {
 
             String content = new String(Files.readAllBytes(Paths.get("src/sample/slowa.txt")));
             newContent = content.split(" ");
             currentLetterWord = newContent[wordCounter].toCharArray();
             t = new Text[newContent.length];
 
-
-
             for (int i = 0; i < newContent.length; i++) {
-                t[i] = new Text(newContent[i]+" ");
+                t[i] = new Text(newContent[i] + " ");
                 textToWriteLabel.getChildren().add(t[i]);
                 t[i].setFill(Color.WHITE);
 
             }
             //textToWriteLabel.setStyle("-fx-font-size: 25px; ");
-            t[0].setFill(Color.BLUE);
-
-
-
-
-            System.out.println("CHUJU JEBANY: "+newContent[0]+ "chuj: "+t[0].getText());
+            t[0].setFill(Color.YELLOW);
 
             currentPositionRight = currentLetterWord.length;
-//            textToWriteLabel.getChildren().addAll(t);
+
 
             System.out.println("Poprawnie załadowano plik.");
-        }
-        catch(IOException e){
+            textInputField.setEditable(true);
+        } catch (IOException e) {
             //e.printStackTrace();
             System.out.println("Błąd ładowania pliku");
         }
     }
 
-    public void setTeksto(ActionEvent event)throws IOException{
+    public void setTeksto(ActionEvent event) throws IOException {
         loadTekst();
         //textToWriteLabel.selectNextWord();
     }
 
     @FXML
-    private void switchToPractice(ActionEvent event)throws IOException {
+    private void switchToPractice(ActionEvent event) throws IOException {
         Parent view2 = FXMLLoader.load(getClass().getResource("fxml/Practice.fxml"));
 
         Scene scene2 = new Scene(view2);
 
-        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setScene(scene2);
         window.show();
-        //loadTekst();
-
-
-        //System.exit(0);
     }
+
     @FXML
-    private void switchToHome(ActionEvent event)throws IOException {
+    private void switchToHome(ActionEvent event) throws IOException {
         Parent view2 = FXMLLoader.load(getClass().getResource("fxml/Home.fxml"));
 
         Scene scene2 = new Scene(view2);
 
-        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setScene(scene2);
         window.show();
 
         //System.exit(0);
     }
+
     @FXML
-    private void switchToAbout(ActionEvent event)throws IOException {
+    private void switchToAbout(ActionEvent event) throws IOException {
         Parent view2 = FXMLLoader.load(getClass().getResource("fxml/About.fxml"));
 
         Scene scene2 = new Scene(view2);
 
-        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setScene(scene2);
         window.show();
 
         System.exit(0);
     }
+
     @FXML
-    private void switchToHelp(ActionEvent event)throws IOException {
+    private void switchToHelp(ActionEvent event) throws IOException {
         Parent view2 = FXMLLoader.load(getClass().getResource("fxml/Help.fxml"));
 
         Scene scene2 = new Scene(view2);
 
-        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setScene(scene2);
         window.show();
 
         //System.exit(0);
     }
+
     @FXML
-    private void switchToTest(ActionEvent event)throws IOException {
+    private void switchToTest(ActionEvent event) throws IOException {
 
         Parent view2 = FXMLLoader.load(getClass().getResource("fxml/Test.fxml"));
 
         Scene scene2 = new Scene(view2);
 
-        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setScene(scene2);
         window.show();
 
 
     }
 
-    public void mobbyn(){
+    public void mobbyn() {
         System.out.println("Siema");
         System.exit(0);
     }
@@ -264,4 +258,3 @@ public class Controller {
 
     }
 }
-

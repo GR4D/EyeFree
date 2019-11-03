@@ -162,6 +162,6 @@
     /*-fx-font-style: bold;*/
 }
 .tlokolor {
-    -fx-background-color: #4527A0;
     -fx-font-size: 25px;
+    -fx-background-color: Color.WHITE;
 }
