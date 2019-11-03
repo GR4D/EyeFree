@@ -62,6 +62,11 @@ public class Controller {
             if (letterCounter != 0) {
                 letterCounter--;
             }
+            if (mistake) {
+                mistakeCounter--;
+                if (mistakeCounter == 0)
+                    t[wordCounter].setFill(Color.YELLOW);
+            }
         } else {
             //System.out.println("Nie jest to backsapce");
             isBackspaceKey = false;
@@ -75,14 +80,9 @@ public class Controller {
                 //textToWriteLabel.selectRange(currentPositionLeft,currentPositionRight);
                 textInputField.deletePreviousChar();
 
-
-//              t[5].setFill(Color.RED);
-
-                //textToWriteLabel.select
                 if (wordCounter + 1 < newContent.length)
                     t[wordCounter + 1].setFill(Color.YELLOW);
 
-                //System.out.println("x: "+currentPositionLeft+ " y: "+currentPositionRight);
                 if (wordCounter != newContent.length) {
 
                     if (textInputField.getText().equals(newContent[wordCounter])) {
@@ -125,7 +125,6 @@ public class Controller {
                     if (!mistake) {
                         System.out.println("ruwna sie ta litera");
                         t[wordCounter].setFill(Color.YELLOW);
-
                         letterGood++;
                     }
                 } else if (e.getCharacter().charAt(0) != currentLetterWord[letterCounter] & !isSpaceChar(e.getCharacter().charAt(0))) {
@@ -135,16 +134,15 @@ public class Controller {
                     mistake = true;
                     mistakeCounter++;
                 }
-
-                if (!isSpaceChar(e.getCharacter().charAt(0)))
-                    letterCounter++;
+            if (!isSpaceChar(e.getCharacter().charAt(0)))
+                letterCounter++;
             }
-        } else {
-            if (mistake){
-                mistakeCounter--;
-                if(mistakeCounter == 0)
-                    t[wordCounter].setFill(Color.YELLOW);
-            }
+            } else {
+//            if (mistake) {
+//                mistakeCounter--;
+//                if (mistakeCounter == 0)
+//                    t[wordCounter].setFill(Color.YELLOW);
+//            }
         }
     }
 
@@ -159,19 +157,26 @@ public class Controller {
             newContent = content.split(" ");
             currentLetterWord = newContent[wordCounter].toCharArray();
             t = new Text[newContent.length];
+           /////////////// ZROBIĆ wczytywanie dwoch linii
+//            if(newContent.length > 20){
+//            }else{
+//                for (int i = 0; i < newContent.length; i++) {
+//                    t[i] = new Text(newContent[i] + " ");
+//                    textToWriteLabel.getChildren().add(t[i]);
+//                    t[i].setFill(Color.WHITE);
+//                }
+//            }
+            ///////////////
 
             for (int i = 0; i < newContent.length; i++) {
                 t[i] = new Text(newContent[i] + " ");
                 textToWriteLabel.getChildren().add(t[i]);
                 t[i].setFill(Color.WHITE);
-
             }
-            //textToWriteLabel.setStyle("-fx-font-size: 25px; ");
+
+
+            //currentPositionRight = currentLetterWord.length;
             t[0].setFill(Color.YELLOW);
-
-            currentPositionRight = currentLetterWord.length;
-
-
             System.out.println("Poprawnie załadowano plik.");
             textInputField.setEditable(true);
         } catch (IOException e) {
@@ -182,7 +187,6 @@ public class Controller {
 
     public void setTeksto(ActionEvent event) throws IOException {
         loadTekst();
-        //textToWriteLabel.selectNextWord();
     }
 
     @FXML
@@ -194,6 +198,7 @@ public class Controller {
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setScene(scene2);
         window.show();
+        //loadTekst();
     }
 
     @FXML
@@ -245,7 +250,6 @@ public class Controller {
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setScene(scene2);
         window.show();
-
 
     }
 

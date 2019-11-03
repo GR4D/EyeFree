@@ -95,7 +95,7 @@
             <Button layoutX="777.0" layoutY="231.0" mnemonicParsing="false" onAction="#setTeksto" prefHeight="28.0" prefWidth="73.0" text="slowa" />
             <Label fx:id="testLabel" layoutX="224.0" layoutY="315.0" prefHeight="45.0" prefWidth="550.0" style="-fx-background-color: #ffffff;" />
             <TextFlow layoutX="577.0" layoutY="450.0" prefHeight="87.0" prefWidth="200.0" />
-            <TextFlow fx:id="textToWriteLabel" layoutX="198.0" layoutY="64.0" prefHeight="111.0" prefWidth="758.0" style="-fx-background-color: #413c5c; -fx-border-color: #000000; -fx-border-width: 3; -fx-border-radius: 5; -fx-background-radius: 5;" styleClass="tlokolor" stylesheets="@../../css/fullpackstyling.css" />
+            <TextFlow fx:id="textToWriteLabel" layoutX="198.0" layoutY="64.0" lineSpacing="2.0" maxHeight="111.0" maxWidth="758.0" prefHeight="111.0" prefWidth="758.0" style="-fx-background-color: #413c5c; -fx-border-color: #000000; -fx-border-width: 3; -fx-border-radius: 5; -fx-background-radius: 5;" styleClass="tlokolor" stylesheets="@../../css/fullpackstyling.css" textAlignment="JUSTIFY" />
          </children>
       </Pane>
    </children>
