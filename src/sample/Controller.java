@@ -48,7 +48,6 @@ public class Controller {
     private int letterGood = 0;
     private int letterError = 0;
     private boolean isBackspaceKey = false;
-    private int currentPositionLeft, currentPositionRight = 0;
     private Text[] t;
     private boolean mistake = false;
     private int mistakeCounter = 0;
@@ -64,9 +63,12 @@ public class Controller {
             }
             if (mistake) {
                 mistakeCounter--;
-                if (mistakeCounter == 0)
-                    t[wordCounter].setFill(Color.YELLOW);
             }
+            if (mistakeCounter == 0){
+                t[wordCounter].setFill(Color.YELLOW);
+                mistake = false;
+            }
+
         } else {
             //System.out.println("Nie jest to backsapce");
             isBackspaceKey = false;
@@ -77,7 +79,6 @@ public class Controller {
     public void keyPressed(KeyEvent e) {
         if (!isBackspaceKey) {
             if (isSpaceChar(e.getCharacter().charAt(0))) {    //jezeli spacja to koniec słowa i sprawdzenie poprawnosci
-                //textToWriteLabel.selectRange(currentPositionLeft,currentPositionRight);
                 textInputField.deletePreviousChar();
 
                 if (wordCounter + 1 < newContent.length)
@@ -104,9 +105,7 @@ public class Controller {
                     textInputField.clear();
                     letterCounter = 0;
                     if (wordCounter != newContent.length) {
-                        currentPositionLeft = currentPositionRight + 1;
                         currentLetterWord = newContent[wordCounter].toCharArray();
-                        currentPositionRight += currentLetterWord.length + 1;
                     }
                 }
 
@@ -126,7 +125,8 @@ public class Controller {
                         System.out.println("ruwna sie ta litera");
                         t[wordCounter].setFill(Color.YELLOW);
                         letterGood++;
-                    }
+                    }else
+                        mistakeCounter++;
                 } else if (e.getCharacter().charAt(0) != currentLetterWord[letterCounter] & !isSpaceChar(e.getCharacter().charAt(0))) {
                     System.out.println("nieruwna sie ta litera");
                     t[wordCounter].setFill(Color.RED);
@@ -150,9 +150,8 @@ public class Controller {
         wordCounter = 0;
         letterCounter = 0;
         textToWriteLabel.getChildren().clear();
-        //textToWriteLabel.setStyle("-fx-highlight-fill: blue; -fx-highlight-text-fill: firebrick; -fx-font-size: 20px;");
-        try {
 
+        try {
             String content = new String(Files.readAllBytes(Paths.get("src/sample/slowa.txt")));
             newContent = content.split(" ");
             currentLetterWord = newContent[wordCounter].toCharArray();
@@ -174,8 +173,6 @@ public class Controller {
                 t[i].setFill(Color.WHITE);
             }
 
-
-            //currentPositionRight = currentLetterWord.length;
             t[0].setFill(Color.YELLOW);
             System.out.println("Poprawnie załadowano plik.");
             textInputField.setEditable(true);
