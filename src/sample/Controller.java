@@ -64,9 +64,11 @@ public class Controller {
             }
             if (mistake) {
                 mistakeCounter--;
-                if (mistakeCounter == 0)
-                    t[wordCounter].setFill(Color.YELLOW);
+            }if (mistakeCounter == 0){
+                t[wordCounter].setFill(Color.YELLOW);
+                mistake = false;
             }
+
         } else {
             //System.out.println("Nie jest to backsapce");
             isBackspaceKey = false;
@@ -126,7 +128,8 @@ public class Controller {
                         System.out.println("ruwna sie ta litera");
                         t[wordCounter].setFill(Color.YELLOW);
                         letterGood++;
-                    }
+                    }else
+                        mistakeCounter++;
                 } else if (e.getCharacter().charAt(0) != currentLetterWord[letterCounter] & !isSpaceChar(e.getCharacter().charAt(0))) {
                     System.out.println("nieruwna sie ta litera");
                     t[wordCounter].setFill(Color.RED);
