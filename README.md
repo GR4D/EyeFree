@@ -1,3 +1,2 @@
 # JPWP_projekt
-JPWP
-Projekcik :)
+Michał Gradkowski Tele2 172216
