@@ -82,7 +82,7 @@ public class Controller {
                 //textToWriteLabel.selectRange(currentPositionLeft,currentPositionRight);
                 textInputField.deletePreviousChar();
 
-                if (wordCounter + 1 < newContent.length)
+                if (wordCounter + 1 < newContent.length && wordCounter < 19)
                     t[wordCounter + 1].setFill(Color.YELLOW);
 
                 if (wordCounter != newContent.length) {
@@ -118,6 +118,14 @@ public class Controller {
                     System.out.println("Koniec dddddddddddddddddddddd");
                     System.out.println("Poprawnych słów: " + goodWords);
                     System.out.println("Błędnych słów: " + errorWords);
+                }
+                if(wordCounter == 20){
+                    textToWriteLabel.getChildren().clear();
+                    for (int i = wordCounter; i < newContent.length; i++) {
+                        t[i] = new Text(newContent[i] + " ");
+                        textToWriteLabel.getChildren().add(t[i]);
+                        t[i].setFill(Color.WHITE);
+                    }
                 }
             }
             if (wordCounter != newContent.length & letterCounter < currentLetterWord.length) {
@@ -171,11 +179,19 @@ public class Controller {
 //            }
             ///////////////
 
-            for (int i = 0; i < newContent.length; i++) {
+
+            for (int i = 0; i < 20; i++) {
                 t[i] = new Text(newContent[i] + " ");
                 textToWriteLabel.getChildren().add(t[i]);
                 t[i].setFill(Color.WHITE);
             }
+
+//
+//            for (int i = 0; i < newContent.length; i++) {
+//                t[i] = new Text(newContent[i] + " ");
+//                textToWriteLabel.getChildren().add(t[i]);
+//                t[i].setFill(Color.WHITE);
+//            }
 
 
             //currentPositionRight = currentLetterWord.length;
