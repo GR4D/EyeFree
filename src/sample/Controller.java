@@ -17,6 +17,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
+import java.util.Timer;
 
 
 //import javax.swing.text.Style;
@@ -25,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.SQLOutput;
 import java.util.Arrays;
+import java.util.TimerTask;
 
 import static java.lang.Character.*;
 import static javafx.event.ActionEvent.ACTION;
@@ -37,6 +39,8 @@ public class Controller {
     private TextFlow textToWriteLabel;
     @FXML
     private Label testLabel;
+    @FXML
+    public Label sekundnik;
 
     private String tekst = "siema";
     private int wordCounter = 0;
@@ -49,12 +53,29 @@ public class Controller {
     private int letterError = 0;
     private boolean isBackspaceKey = false;
     private Text[] t;
+    private Text[] separator;
     private boolean mistake = false;
     private int mistakeCounter = 0;
     private boolean isStarted = false;
+    private int iloscSlowWczytanych = 0;
+    public boolean isTimeStarted = false;
+    public Main.Czas czas;
 
+    public void refreshTime(){
+
+    }
+    public void resetAll(){
+        wordCounter = 0;
+        letterCounter = 0;
+        goodWords = 0;
+        errorWords = 0;
+        isBackspaceKey = false;
+        mistakeCounter = 0;
+        iloscSlowWczytanych = 0;
+    }
     @FXML
     public void isBackspace(KeyEvent e) {
+
         if (e.getCode() == KeyCode.BACK_SPACE) {
             //System.out.println("Backspace chuj");
             isBackspaceKey = true;
@@ -77,12 +98,19 @@ public class Controller {
 
     @FXML
     public void keyPressed(KeyEvent e) {
+        if(!isTimeStarted){
+            czas.start();
+            isTimeStarted = true;
+        }
+
         if (!isBackspaceKey) {
             if (isSpaceChar(e.getCharacter().charAt(0))) {    //jezeli spacja to koniec słowa i sprawdzenie poprawnosci
-                textInputField.deletePreviousChar();
+               textInputField.deletePreviousChar();
+
+                System.out.println("j"+textInputField.getText()+"j");
 
                 if (wordCounter + 1 < newContent.length)
-                    t[wordCounter + 1].setFill(Color.YELLOW);
+                   t[wordCounter + 1].setFill(Color.YELLOW);
 
                 if (wordCounter != newContent.length) {
 
@@ -91,30 +119,45 @@ public class Controller {
                         goodWords++;
                         t[wordCounter].setFill(Color.GREEN);
                         wordCounter++;
+                        textInputField.deletePreviousChar();
+                        textInputField.clear();
+                        if(wordCounter % 9 == 0){
+                            switchLine();
+                            System.out.println("ilosclowwczytanych: "+iloscSlowWczytanych);
+                            t[iloscSlowWczytanych].setFill(Color.YELLOW);
+                        }
                     } else {
                         System.out.println("nie zgadza sie");
                         errorWords++;
                         t[wordCounter].setFill(Color.RED);
                         wordCounter++;
-
-//               currentLetterWord = newContent[wordCounter].toCharArray();
+                        textInputField.deletePreviousChar();
+                        textInputField.clear();
+                        if(wordCounter % 9 == 0){
+                            switchLine();
+                            System.out.println("ilosclowwczytanych: "+iloscSlowWczytanych);
+                        }
                     }
-                    //wordCounter++;
+
                     mistakeCounter = 0;
                     mistake = false;
-                    textInputField.clear();
                     letterCounter = 0;
                     if (wordCounter != newContent.length) {
                         currentLetterWord = newContent[wordCounter].toCharArray();
                     }
+
                 }
 
                 if (wordCounter == newContent.length) { // koniec wpisywania
+                    czas.stop();
+
                     textInputField.setEditable(false);
                     testLabel.setText("Koniec wpisywania! Poprawnych słów: " + goodWords + " Błędnych słów: " + errorWords);
                     System.out.println("Koniec dddddddddddddddddddddd");
                     System.out.println("Poprawnych słów: " + goodWords);
                     System.out.println("Błędnych słów: " + errorWords);
+
+                    resetAll();
                 }
             }
             if (wordCounter != newContent.length & letterCounter < currentLetterWord.length) {
@@ -134,56 +177,76 @@ public class Controller {
                     mistake = true;
                     mistakeCounter++;
                 }
-            if (!isSpaceChar(e.getCharacter().charAt(0)))
-                letterCounter++;
+                if (!isSpaceChar(e.getCharacter().charAt(0)))
+                    letterCounter++;
             }
-            } else {
-//            if (mistake) {
-//                mistakeCounter--;
-//                if (mistakeCounter == 0)
-//                    t[wordCounter].setFill(Color.YELLOW);
-//            }
         }
     }
+    public void switchLine(){
 
+            iloscSlowWczytanych +=9;
+            textToWriteLabel.getChildren().clear();
+            if(iloscSlowWczytanych + 17 < newContent.length){
+            for (int i = iloscSlowWczytanych; i < iloscSlowWczytanych + 18; i++) {
+                t[i] = new Text(newContent[i] + "  ");
+                textToWriteLabel.getChildren().add(t[i]);
+                t[i].setFill(Color.WHITE);
+                if(i==iloscSlowWczytanych+8)
+                    textToWriteLabel.getChildren().add(separator[0]);
+            }
+            t[wordCounter].setFill(Color.YELLOW);
+            }else if (iloscSlowWczytanych +18 > newContent.length){
+                for (int i = iloscSlowWczytanych; i < newContent.length; i++) {
+                    t[i] = new Text(newContent[i] + "  ");
+                    textToWriteLabel.getChildren().add(t[i]);
+                    t[i].setFill(Color.WHITE);
+                    if(i==iloscSlowWczytanych+8)
+                        textToWriteLabel.getChildren().add(separator[0]);
+                } t[wordCounter].setFill(Color.YELLOW);
+            }
+
+    }
     public void loadTekst() throws IOException {
         wordCounter = 0;
         letterCounter = 0;
         textToWriteLabel.getChildren().clear();
-
         try {
             String content = new String(Files.readAllBytes(Paths.get("src/sample/slowa.txt")));
             newContent = content.split(" ");
             currentLetterWord = newContent[wordCounter].toCharArray();
             t = new Text[newContent.length];
-           /////////////// ZROBIĆ wczytywanie dwoch linii
-//            if(newContent.length > 20){
-//            }else{
-//                for (int i = 0; i < newContent.length; i++) {
-//                    t[i] = new Text(newContent[i] + " ");
-//                    textToWriteLabel.getChildren().add(t[i]);
-//                    t[i].setFill(Color.WHITE);
-//                }
-//            }
-            ///////////////
+            separator = new Text[1];
+            separator[0] = new Text("\n");
 
-            for (int i = 0; i < newContent.length; i++) {
-                t[i] = new Text(newContent[i] + " ");
-                textToWriteLabel.getChildren().add(t[i]);
-                t[i].setFill(Color.WHITE);
+            if(newContent.length > 10){
+                for (int i = iloscSlowWczytanych; i < 18 +iloscSlowWczytanych; i++) {
+                    t[i] = new Text(newContent[i] + " ");
+                    textToWriteLabel.getChildren().add(t[i]);
+                    t[i].setFill(Color.WHITE);
+                    if(i==iloscSlowWczytanych+8)
+                        textToWriteLabel.getChildren().add(separator[0]);
+                }
+            }else{
+                for (int i = 0; i < newContent.length; i++) {
+                    t[i] = new Text(newContent[i] + " ");
+                    textToWriteLabel.getChildren().add(t[i]);
+                    t[i].setFill(Color.WHITE);
+                }
             }
 
             t[0].setFill(Color.YELLOW);
             System.out.println("Poprawnie załadowano plik.");
             textInputField.setEditable(true);
+            textInputField.clear();
         } catch (IOException e) {
-            //e.printStackTrace();
             System.out.println("Błąd ładowania pliku");
         }
     }
 
     public void setTeksto(ActionEvent event) throws IOException {
         loadTekst();
+
+
     }
 
     @FXML
