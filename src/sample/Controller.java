@@ -99,7 +99,7 @@ public class Controller {
     @FXML
     public void keyPressed(KeyEvent e) {
         if(!isTimeStarted){
-            czas.start();
+            //czas.start();
             isTimeStarted = true;
         }
 
@@ -149,7 +149,7 @@ public class Controller {
                 }
 
                 if (wordCounter == newContent.length) { // koniec wpisywania
-                    czas.stop();
+//                    czas.stop();
 
                     textInputField.setEditable(false);
                     testLabel.setText("Koniec wpisywania! Poprawnych słów: " + goodWords + " Błędnych słów: " + errorWords);
