@@ -72,14 +72,15 @@ public class Controller {
         isBackspaceKey = false;
         mistakeCounter = 0;
         iloscSlowWczytanych = 0;
+        mistake = false;
     }
     @FXML
     public void isBackspace(KeyEvent e) {
 
         if (e.getCode() == KeyCode.BACK_SPACE) {
-            //System.out.println("Backspace chuj");
             isBackspaceKey = true;
-            if (letterCounter != 0) {
+
+            if (letterCounter != 0 & ( textInputField.getText().length() < newContent[wordCounter].length()) ) {
                 letterCounter--;
             }
             if (mistake) {
@@ -91,28 +92,33 @@ public class Controller {
             }
 
         } else {
-            //System.out.println("Nie jest to backsapce");
             isBackspaceKey = false;
         }
     }
+
     @FXML
     public void spellCheck(KeyEvent e){
         System.out.println("litera: " + currentLetterWord[letterCounter]);
 
-        if (e.getCharacter().charAt(0) == currentLetterWord[letterCounter] & !isSpaceChar(e.getCharacter().charAt(0))) {
+        if (e.getCharacter().charAt(0) == currentLetterWord[letterCounter] & !isSpaceChar(e.getCharacter().charAt(0)) ) {
             if (!mistake) {
                 System.out.println("ruwna sie ta litera");
                 t[wordCounter].setFill(Color.YELLOW);
                 letterGood++;
-            }else
+            } else{
+                mistake = true;
                 mistakeCounter++;
-        } else if (e.getCharacter().charAt(0) != currentLetterWord[letterCounter] & !isSpaceChar(e.getCharacter().charAt(0))) {
+            }
+
+        } else if (e.getCharacter().charAt(0) != currentLetterWord[letterCounter] & !isSpaceChar(e.getCharacter().charAt(0)) ) {
             System.out.println("nieruwna sie ta litera");
             t[wordCounter].setFill(Color.RED);
             letterError++;
             mistake = true;
             mistakeCounter++;
+            System.out.println("iloscBledowjakichstam: "+ mistakeCounter);
         }
+
         if (!isSpaceChar(e.getCharacter().charAt(0)))
             letterCounter++;
     }
@@ -124,6 +130,7 @@ public class Controller {
             System.out.println("Poprawnych słów: " + goodWords);
             System.out.println("Błędnych słów: " + errorWords);
             resetAll();
+            textToWriteLabel.getChildren().clear();
         }
     }
     @FXML
@@ -177,12 +184,21 @@ public class Controller {
 
             if (wordCounter != newContent.length & letterCounter < currentLetterWord.length) {
                 spellCheck(e);
+            } else if (textInputField.getText().length() > newContent[wordCounter].length()){
+                mistake = true;
+                mistakeCounter++;
             }
+        }
+
+        if (mistake){
+            t[wordCounter].setFill(Color.RED);
         }
     }
     @FXML
     public void keyPressed(KeyEvent e) {//typing
         typingCheck(e);
+        System.out.println("iloscBledow: "+mistakeCounter);
+        System.out.println("czy bledy sa?: " + mistake);
     }
 
     public void switchLine(){
