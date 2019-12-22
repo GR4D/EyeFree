@@ -31,6 +31,7 @@ import java.nio.file.Paths;
 import java.sql.SQLOutput;
 import java.util.Arrays;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 import static java.lang.Character.*;
 import static javafx.event.ActionEvent.ACTION;
@@ -65,6 +66,7 @@ public class Controller {
     public boolean isTimeStarted = false;
     public Main.Czas czas;
     public int time = 60;
+    public String file = "src/sample/slowa.txt";
     TimerTest task1 = new TimerTest();
     Timer timer = new Timer();
 
@@ -238,7 +240,7 @@ public class Controller {
             textToWriteLabel.getChildren().clear();
             if(iloscSlowWczytanych + 17 < newContent.length){
             for (int i = iloscSlowWczytanych; i < iloscSlowWczytanych + 18; i++) {
-                t[i] = new Text(newContent[i] + "  ");
+                t[i] = new Text(newContent[i] + " ");
                 textToWriteLabel.getChildren().add(t[i]);
                 t[i].setFill(Color.WHITE);
                 if(i==iloscSlowWczytanych+8)
@@ -247,7 +249,7 @@ public class Controller {
             t[wordCounter].setFill(Color.YELLOW);
             }else if (iloscSlowWczytanych +18 > newContent.length){
                 for (int i = iloscSlowWczytanych; i < newContent.length; i++) {
-                    t[i] = new Text(newContent[i] + "  ");
+                    t[i] = new Text(newContent[i] + " ");
                     textToWriteLabel.getChildren().add(t[i]);
                     t[i].setFill(Color.WHITE);
                     if(i==iloscSlowWczytanych+8)
@@ -255,12 +257,17 @@ public class Controller {
                 } t[wordCounter].setFill(Color.YELLOW);
             }
     }
-    public void loadTekst() throws IOException {
+    public void lineLoader(int i){
+        t[i] = new Text(newContent[i] + " ");
+        textToWriteLabel.getChildren().add(t[i]);
+        t[i].setFill(Color.WHITE);
+    }
+    public void loadTekst(String path) throws IOException {
         wordCounter = 0;
         letterCounter = 0;
         textToWriteLabel.getChildren().clear();
         try {
-            String content = new String(Files.readAllBytes(Paths.get("src/sample/slowa.txt")));
+            String content = new String(Files.readAllBytes(Paths.get(path)));
             newContent = content.split(" ");
             currentLetterWord = newContent[wordCounter].toCharArray();
             t = new Text[newContent.length];
@@ -269,17 +276,13 @@ public class Controller {
 
             if(newContent.length > 10){
                 for (int i = iloscSlowWczytanych; i < 18 +iloscSlowWczytanych; i++) {
-                    t[i] = new Text(newContent[i] + " ");
-                    textToWriteLabel.getChildren().add(t[i]);
-                    t[i].setFill(Color.WHITE);
+                    lineLoader(i);
                     if(i==iloscSlowWczytanych+8)
                         textToWriteLabel.getChildren().add(separator[0]);
                 }
             }else{
                 for (int i = 0; i < newContent.length; i++) {
-                    t[i] = new Text(newContent[i] + " ");
-                    textToWriteLabel.getChildren().add(t[i]);
-                    t[i].setFill(Color.WHITE);
+                    lineLoader(i);
                 }
             }
 
@@ -293,11 +296,11 @@ public class Controller {
     }
 
     public void setTeksto(ActionEvent event) throws IOException {
-        loadTekst();
+        loadTekst(file);
     }
 
     @FXML
-    private void switchToPractice(ActionEvent event) throws IOException {
+    private void switchToPractice(ActionEvent event) throws IOException, InterruptedException {
         Parent view2 = FXMLLoader.load(getClass().getResource("fxml/Practice.fxml"));
 
         Scene scene2 = new Scene(view2);
@@ -305,9 +308,6 @@ public class Controller {
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setScene(scene2);
         window.show();
-
-        //timer.cancel();
-        //loadTekst();
     }
 
     @FXML
