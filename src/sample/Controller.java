@@ -1,5 +1,6 @@
 package sample;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -19,6 +20,7 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 
 import java.security.Key;
+import java.util.Date;
 import java.util.Timer;
 
 
@@ -62,8 +64,27 @@ public class Controller {
     private int iloscSlowWczytanych = 0;
     public boolean isTimeStarted = false;
     public Main.Czas czas;
+    public int time = 60;
+    TimerTest task1 = new TimerTest();
+    Timer timer = new Timer();
 
+    class TimerTest extends TimerTask{
+        @Override
+        public void run(){
+            displayTimer();
+            if(time == 0){
+                cancel();
+                Platform.runLater(() -> typingEnd());
+            }
+        }
+    }
 
+    @FXML
+    public void displayTimer(){
+        time--;
+        System.out.println("Czas: "+time);
+        Platform.runLater(() -> sekundnik.setText("0:" + time) );
+    }
     public void resetAll(){
         wordCounter = 0;
         letterCounter = 0;
@@ -106,7 +127,6 @@ public class Controller {
                 t[wordCounter].setFill(Color.YELLOW);
                 letterGood++;
             } else{
-                mistake = true;
                 mistakeCounter++;
             }
 
@@ -123,15 +143,18 @@ public class Controller {
             letterCounter++;
     }
     @FXML
-    public void typingEnd(KeyEvent e){
-        if (wordCounter == newContent.length) { // koniec wpisywania
-            textInputField.setEditable(false);
-            testLabel.setText("Koniec wpisywania! Poprawnych słów: " + goodWords + " Błędnych słów: " + errorWords);
-            System.out.println("Poprawnych słów: " + goodWords);
-            System.out.println("Błędnych słów: " + errorWords);
-            resetAll();
-            textToWriteLabel.getChildren().clear();
-        }
+    public void typingEnd(){
+        timer.cancel();
+        textInputField.setEditable(false);
+        testLabel.setText("Koniec wpisywania! Poprawnych słów: " + goodWords + " Błędnych słów: " + errorWords);
+        System.out.println("Poprawnych słów: " + goodWords);
+        System.out.println("Błędnych słów: " + errorWords);
+        resetAll();
+        textToWriteLabel.getChildren().clear();
+    }
+    public void typingEndBeforeTimer(){
+        timer.cancel();
+        typingEnd();
     }
     @FXML
     public void typingCheck(KeyEvent e){
@@ -177,7 +200,8 @@ public class Controller {
                     }
                 }
                 if (wordCounter == newContent.length) {
-                    typingEnd(e);
+                    typingEnd();
+                    //typingEndBeforeTimer();
                 }
 
             }
@@ -196,6 +220,14 @@ public class Controller {
     }
     @FXML
     public void keyPressed(KeyEvent e) {//typing
+
+        if (!isTimeStarted){
+//            TimerTest task1 = new TimerTest();
+//            Timer timer = new Timer();
+            timer.schedule(task1, 1000,1000);
+            isTimeStarted = true;
+        }
+        isTimeStarted = true;
         typingCheck(e);
         System.out.println("iloscBledow: "+mistakeCounter);
         System.out.println("czy bledy sa?: " + mistake);
@@ -273,6 +305,8 @@ public class Controller {
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setScene(scene2);
         window.show();
+
+        //timer.cancel();
         //loadTekst();
     }
 
