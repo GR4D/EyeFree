@@ -46,7 +46,6 @@ public class Controller {
     private Label testLabel;
     @FXML
     public Label sekundnik;
-
     private String tekst = "siema";
     private int wordCounter = 0;
     private int letterCounter = 0;
@@ -61,14 +60,17 @@ public class Controller {
     private Text[] separator;
     private boolean mistake = false;
     private int mistakeCounter = 0;
-    private boolean isStarted = false;
+    private boolean isFinished = false;
     private int iloscSlowWczytanych = 0;
     public boolean isTimeStarted = false;
-    public Main.Czas czas;
-    public int time = 60;
+    public int time = 12;
+    public int minutes = (time % 3600) / 60;
+    public int seconds= time % 60;
     public String file = "src/sample/slowa.txt";
     TimerTest task1 = new TimerTest();
     Timer timer = new Timer();
+
+
 
     class TimerTest extends TimerTask{
         @Override
@@ -84,8 +86,12 @@ public class Controller {
     @FXML
     public void displayTimer(){
         time--;
-        System.out.println("Czas: "+time);
-        Platform.runLater(() -> sekundnik.setText("0:" + time) );
+        minutes = (time % 3600) / 60;
+        seconds= time % 60;
+
+        Platform.runLater(() -> sekundnik.setText(String.format("%d:%02d", minutes, seconds )));
+        System.out.println(String.format("%d:%02d", minutes, seconds ));
+
     }
     public void resetAll(){
         wordCounter = 0;
@@ -147,12 +153,13 @@ public class Controller {
     @FXML
     public void typingEnd(){
         timer.cancel();
+        textInputField.clear();
         textInputField.setEditable(false);
+        isFinished = true;
         testLabel.setText("Koniec wpisywania! Poprawnych słów: " + goodWords + " Błędnych słów: " + errorWords);
         System.out.println("Poprawnych słów: " + goodWords);
         System.out.println("Błędnych słów: " + errorWords);
         resetAll();
-        textToWriteLabel.getChildren().clear();
     }
     public void typingEndBeforeTimer(){
         timer.cancel();
@@ -189,7 +196,9 @@ public class Controller {
                         textInputField.deletePreviousChar();
                         textInputField.clear();
                         if (wordCounter % 9 == 0) {
-                            switchLine();
+                            if(!isFinished) {
+                                switchLine();
+                            }
                             System.out.println("ilosclowwczytanych: " + iloscSlowWczytanych);
                         }
                     }
@@ -224,12 +233,9 @@ public class Controller {
     public void keyPressed(KeyEvent e) {//typing
 
         if (!isTimeStarted){
-//            TimerTest task1 = new TimerTest();
-//            Timer timer = new Timer();
             timer.schedule(task1, 1000,1000);
             isTimeStarted = true;
         }
-        isTimeStarted = true;
         typingCheck(e);
         System.out.println("iloscBledow: "+mistakeCounter);
         System.out.println("czy bledy sa?: " + mistake);
@@ -263,8 +269,7 @@ public class Controller {
         t[i].setFill(Color.WHITE);
     }
     public void loadTekst(String path) throws IOException {
-        wordCounter = 0;
-        letterCounter = 0;
+        resetAll();
         textToWriteLabel.getChildren().clear();
         try {
             String content = new String(Files.readAllBytes(Paths.get(path)));
@@ -297,6 +302,7 @@ public class Controller {
 
     public void setTeksto(ActionEvent event) throws IOException {
         loadTekst(file);
+        sekundnik.setText(String.format("%d:%02d", minutes, seconds ));
     }
 
     @FXML
@@ -319,10 +325,11 @@ public class Controller {
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setScene(scene2);
         window.show();
-
-        //System.exit(0);
     }
-
+    @FXML
+    private void quit(ActionEvent event) throws IOException{
+        System.exit(0);
+    }
     @FXML
     private void switchToAbout(ActionEvent event) throws IOException {
         Parent view2 = FXMLLoader.load(getClass().getResource("fxml/About.fxml"));
@@ -332,8 +339,6 @@ public class Controller {
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setScene(scene2);
         window.show();
-
-        System.exit(0);
     }
 
     @FXML
@@ -345,13 +350,10 @@ public class Controller {
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setScene(scene2);
         window.show();
-
-        //System.exit(0);
     }
 
     @FXML
     private void switchToTest(ActionEvent event) throws IOException {
-
         Parent view2 = FXMLLoader.load(getClass().getResource("fxml/Test.fxml"));
 
         Scene scene2 = new Scene(view2);
@@ -359,12 +361,6 @@ public class Controller {
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setScene(scene2);
         window.show();
-
-    }
-
-    public void mobbyn() {
-        System.out.println("Siema");
-        System.exit(0);
     }
 
     void initialize() {

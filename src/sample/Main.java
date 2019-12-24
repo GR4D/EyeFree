@@ -26,32 +26,5 @@ public class Main extends Application {
         primaryStage.show();
 
     }
-
-    public static class Czas{
-        public Controller controllerr;
-        int sekundy = 60;
-
-        Timer timer = new Timer();
-        TimerTask task = new TimerTask() {
-
-
-            @Override
-            public void run() {
-                sekundy--;
-
-               System.out.println("sekundy: "+sekundy);
-                controllerr.sekundnik.setText("guw");            }
-        };
-
-        public void start(){
-            timer.scheduleAtFixedRate(task, 1000, 1000);
-        }
-        public void stop(){
-            timer.cancel();
-            System.out.println("sekundy ze stopa: "+sekundy);
-        }
-
-    }
-
     public static void main(String[] args) { launch(args); }
 }

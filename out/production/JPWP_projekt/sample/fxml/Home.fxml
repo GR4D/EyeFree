@@ -83,6 +83,29 @@
                   </LinearGradient>
                </textFill>
             </Button>
+            <Button fx:id="about1" contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#quit" prefHeight="87.0" prefWidth="100.0" styleClass="button3">
+               <font>
+                  <Font name="SansSerif Regular" size="18.0" />
+               </font>
+               <graphic>
+                  <ImageView fitHeight="70.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../resources/exit.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <textFill>
+                  <LinearGradient endX="1.0" endY="1.0">
+                     <stops>
+                        <Stop color="#bc0e0e" />
+                        <Stop color="#c5a1ff" offset="1.0" />
+                     </stops>
+                  </LinearGradient>
+               </textFill>
+               <VBox.margin>
+                  <Insets top="115.0" />
+               </VBox.margin>
+            </Button>
          </children>
       </VBox>
       <Pane layoutX="100.0" prefHeight="720.0" prefWidth="1180.0" style="-fx-background-color: #2F2B43;">
