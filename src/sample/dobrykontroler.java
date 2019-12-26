@@ -2,41 +2,31 @@ package sample;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 
-import java.security.Key;
-import java.util.Date;
-import java.util.Timer;
-
-
-//import javax.swing.text.Style;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.sql.SQLOutput;
-import java.util.Arrays;
+import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 
-import static java.lang.Character.*;
-import static javafx.event.ActionEvent.ACTION;
+import static java.lang.Character.isSpaceChar;
 
-public class Controller {
+//import javax.swing.text.Style;
+
+public class dobrykontroler {
 
     @FXML
     private TextArea textInputField;
@@ -61,26 +51,30 @@ public class Controller {
     private boolean isFinished = false;
     private int iloscSlowWczytanych = 0;
     public boolean isTimeStarted = false;
-    public int time = 12;
+    public int time = 10;
     public int minutes = (time % 3600) / 60;
     public int seconds= time % 60;
     public String file = "src/sample/1.txt";
+
     TimerTest task1 = new TimerTest();
     Timer timer = new Timer();
-
-
 
     class TimerTest extends TimerTask{
         @Override
         public void run(){
             displayTimer();
             if(time == 0){
-                cancel();
+                timer.cancel();
+                timer.purge();
                 Platform.runLater(() -> typingEnd());
             }
         }
     }
-
+    @FXML
+    public void reset(){
+        resetAll();
+        //switchToPractice(ActionEvent);
+    }
     @FXML
     public void displayTimer(){
         time--;
@@ -89,6 +83,7 @@ public class Controller {
 
         Platform.runLater(() -> sekundnik.setText(String.format("%d:%02d", minutes, seconds )));
         System.out.println(String.format("%d:%02d", minutes, seconds ));
+        System.out.println("wordCounter: " + wordCounter);
 
     }
     public void resetAll(){
@@ -97,9 +92,16 @@ public class Controller {
         goodWords = 0;
         errorWords = 0;
         isBackspaceKey = false;
+        isMistake = false;
         mistakeCounter = 0;
         iloscSlowWczytanych = 0;
-        isMistake = false;
+//        isFinished = false;
+        isTimeStarted =  false;
+        time = 10;
+        minutes = (time % 3600) / 60;
+        seconds= time % 60;
+
+
     }
     @FXML
     public void isBackspace(KeyEvent e) {
@@ -148,15 +150,18 @@ public class Controller {
     }
     @FXML
     public void typingEnd(){
-        timer.cancel();
         textInputField.clear();
         textInputField.setEditable(false);
         isFinished = true;
+        timer.cancel();
+        timer.purge();
+        time = 60;
         testLabel.setText("Koniec wpisywania! Poprawnych słów: " + goodWords + " Błędnych słów: " + errorWords);
         System.out.println("Poprawnych słów: " + goodWords);
         System.out.println("Błędnych słów: " + errorWords);
-        resetAll();
+        //resetAll();
     }
+
     public void typingEndBeforeTimer(){
         timer.cancel();
         typingEnd();
@@ -208,64 +213,71 @@ public class Controller {
                 }
                 if (wordCounter == newContent.length) {
                     typingEnd();
+                    //wordCounter--;
                     //typingEndBeforeTimer();
                 }
 
             }
 
-            if (wordCounter != newContent.length & letterCounter < currentLetterWord.length) {
+            if (wordCounter != newContent.length && letterCounter < currentLetterWord.length) {
                 spellCheck(e);
-            } else if (textInputField.getText().length() > newContent[wordCounter].length()){
+            } else if (wordCounter != newContent.length && textInputField.getText().length() > newContent[wordCounter].length()){
                 isMistake = true;
                 mistakeCounter++;
             }
         }
-
         if (isMistake){
             t[wordCounter].setFill(Color.RED);
         }
     }
     @FXML
-    public void keyPressed(KeyEvent e) {//typing
+    public void keyPressed(KeyEvent e) throws Exception{//typing
 
-        if (!isTimeStarted){
-            timer.schedule(task1, 1000,1000);
-            isTimeStarted = true;
+       if(!isFinished & !isTimeStarted){
+           timer.schedule(task1, 1000,1000);
+           isTimeStarted = true;
+           System.out.println("idzie timer z try");
+       }
+        if(!isFinished) {
+            typingCheck(e);
+            System.out.println("idzie typingcheck");
         }
-        typingCheck(e);
-        System.out.println("iloscBledow: "+mistakeCounter);
-        System.out.println("czy bledy sa?: " + isMistake);
+//        System.out.println("iloscBledow: "+mistakeCounter);
+//        System.out.println("czy bledy sa?: " + isMistake);
     }
 
-    public void switchLine(){
-            iloscSlowWczytanych +=9;
+    public void switchLine() {
+        if (!isFinished){
+            iloscSlowWczytanych += 9;
             textToWriteLabel.getChildren().clear();
-            if(iloscSlowWczytanych + 17 < newContent.length){
-            for (int i = iloscSlowWczytanych; i < iloscSlowWczytanych + 18; i++) {
-                t[i] = new Text(newContent[i] + " ");
-                textToWriteLabel.getChildren().add(t[i]);
-                t[i].setFill(Color.WHITE);
-                if(i==iloscSlowWczytanych+8)
-                    textToWriteLabel.getChildren().add(separator[0]);
-            }
-            t[wordCounter].setFill(Color.YELLOW);
-            }else if (iloscSlowWczytanych +18 > newContent.length){
-                for (int i = iloscSlowWczytanych; i < newContent.length; i++) {
-                    t[i] = new Text(newContent[i] + " ");
+            if (iloscSlowWczytanych + 17 < newContent.length) {
+                for (int i = iloscSlowWczytanych; i < iloscSlowWczytanych + 18; i++) {
+                    t[i] = new Text(newContent[i] + "    ");
                     textToWriteLabel.getChildren().add(t[i]);
                     t[i].setFill(Color.WHITE);
-                    if(i==iloscSlowWczytanych+8)
+                    if (i == iloscSlowWczytanych + 8)
                         textToWriteLabel.getChildren().add(separator[0]);
-                } t[wordCounter].setFill(Color.YELLOW);
+                }
+                t[wordCounter].setFill(Color.YELLOW);
+            } else if (iloscSlowWczytanych + 18 > newContent.length) {
+                for (int i = iloscSlowWczytanych; i < newContent.length; i++) {
+                    t[i] = new Text(newContent[i] + "    ");
+                    textToWriteLabel.getChildren().add(t[i]);
+                    t[i].setFill(Color.WHITE);
+                    if (i == iloscSlowWczytanych + 8)
+                        textToWriteLabel.getChildren().add(separator[0]);
+                }
+                //t[wordCounter-1].setFill(Color.YELLOW);
             }
+        }
     }
     public void lineLoader(int i){
-        t[i] = new Text(newContent[i] + " ");
+        t[i] = new Text(newContent[i] + "    ");
         textToWriteLabel.getChildren().add(t[i]);
         t[i].setFill(Color.WHITE);
     }
     public void loadTekst(String path) throws IOException {
-        resetAll();
+        //resetAll();
         textToWriteLabel.getChildren().clear();
         try {
             String content = new String(Files.readAllBytes(Paths.get(path)));
@@ -286,7 +298,6 @@ public class Controller {
                     lineLoader(i);
                 }
             }
-
             t[0].setFill(Color.YELLOW);
             System.out.println("Poprawnie załadowano plik.");
             textInputField.setEditable(true);
@@ -297,7 +308,14 @@ public class Controller {
     }
 
     public void setTeksto(ActionEvent event) throws IOException {
+        resetAll();
         loadTekst(file);
+        isFinished = false;
+        timer.cancel();
+        timer.purge();
+        task1 = new TimerTest();
+        timer = new Timer();
+        testLabel.setText("");
         sekundnik.setText(String.format("%d:%02d", minutes, seconds ));
     }
 
@@ -310,6 +328,10 @@ public class Controller {
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setScene(scene2);
         window.show();
+        if(isTimeStarted){
+            timer.cancel();
+            timer.purge();
+        }
     }
 
     @FXML
@@ -321,6 +343,10 @@ public class Controller {
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setScene(scene2);
         window.show();
+        if(isTimeStarted){
+            timer.cancel();
+            timer.purge();
+        }
     }
     @FXML
     private void quit(ActionEvent event) throws IOException{
@@ -335,6 +361,10 @@ public class Controller {
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setScene(scene2);
         window.show();
+        if(isTimeStarted){
+            timer.cancel();
+            timer.purge();
+        }
     }
 
     @FXML
@@ -346,6 +376,10 @@ public class Controller {
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setScene(scene2);
         window.show();
+        if(isTimeStarted){
+            timer.cancel();
+            timer.purge();
+        }
     }
 
     @FXML
@@ -357,6 +391,10 @@ public class Controller {
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setScene(scene2);
         window.show();
+        if(isTimeStarted){
+            timer.cancel();
+            timer.purge();
+        }
     }
 
     void initialize() {
