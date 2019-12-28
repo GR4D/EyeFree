@@ -19,14 +19,13 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 import static java.lang.Character.isSpaceChar;
 
 //import javax.swing.text.Style;
 
-public class dobrykontroler {
+public class PracticeController_good {
 
     @FXML
     private TextArea textInputField;
@@ -36,6 +35,8 @@ public class dobrykontroler {
     private Label testLabel;
     @FXML
     public Label sekundnik;
+    @FXML
+    public Label levelDisplay;
     private String tekst = "siema";
     private int wordCounter = 0;
     private int letterCounter = 0;
@@ -51,13 +52,17 @@ public class dobrykontroler {
     private boolean isFinished = false;
     private int iloscSlowWczytanych = 0;
     public boolean isTimeStarted = false;
-    public int time = 10;
+    public int time = 60;
     public int minutes = (time % 3600) / 60;
     public int seconds= time % 60;
     public String file = "src/sample/1.txt";
+    public int level = 1;
+    int[] liczby;
+    String nazwapliczku;
 
     TimerTest task1 = new TimerTest();
     Timer timer = new Timer();
+    Random random = new Random();
 
     class TimerTest extends TimerTask{
         @Override
@@ -72,7 +77,8 @@ public class dobrykontroler {
     }
     @FXML
     public void reset(){
-        resetAll();;
+        resetAll();
+        //switchToPractice(ActionEvent);
     }
     @FXML
     public void displayTimer(){
@@ -81,7 +87,7 @@ public class dobrykontroler {
         seconds= time % 60;
 
         Platform.runLater(() -> sekundnik.setText(String.format("%d:%02d", minutes, seconds )));
-        //System.out.println(String.format("%d:%02d", minutes, seconds ));
+        System.out.println(String.format("%d:%02d", minutes, seconds ));
         //System.out.println("wordCounter: " + wordCounter);
 
     }
@@ -96,7 +102,7 @@ public class dobrykontroler {
         iloscSlowWczytanych = 0;
 //        isFinished = false;
         isTimeStarted =  false;
-        time = 10;
+        time = 60;
         minutes = (time % 3600) / 60;
         seconds= time % 60;
 
@@ -108,7 +114,7 @@ public class dobrykontroler {
         if (e.getCode() == KeyCode.BACK_SPACE) {
             isBackspaceKey = true;
 
-            if (letterCounter != 0 & ( textInputField.getText().length() < newContent[wordCounter].length()) ) {
+            if (letterCounter != 0 & ( textInputField.getText().length() < newContent[liczby[wordCounter]].length()) ) {
                 letterCounter--;
             }
             if (isMistake) {
@@ -126,7 +132,7 @@ public class dobrykontroler {
 
     @FXML
     public void spellCheck(KeyEvent e){
-        //("litera: " + currentLetterWord[letterCounter]);
+        System.out.println("litera: " + currentLetterWord[letterCounter]);
 
         if (e.getCharacter().charAt(0) == currentLetterWord[letterCounter] & !isSpaceChar(e.getCharacter().charAt(0)) ) {
             if (!isMistake) {
@@ -141,12 +147,11 @@ public class dobrykontroler {
             t[wordCounter].setFill(Color.RED);
             isMistake = true;
             mistakeCounter++;
-            //("iloscBledowjakichstam: "+ mistakeCounter);
+            System.out.println("iloscBledowjakichstam: "+ mistakeCounter);
         }
 
-        if (!isSpaceChar(e.getCharacter().charAt(0))) {
+        if (!isSpaceChar(e.getCharacter().charAt(0)))
             letterCounter++;
-        }
     }
     @FXML
     public void typingEnd(){
@@ -156,9 +161,11 @@ public class dobrykontroler {
         timer.cancel();
         timer.purge();
         time = 60;
+        level++;
         testLabel.setText("Koniec wpisywania! Poprawnych słów: " + goodWords + " Błędnych słów: " + errorWords);
         System.out.println("Poprawnych słów: " + goodWords);
         System.out.println("Błędnych słów: " + errorWords);
+        //resetAll();
     }
 
     public void typingEndBeforeTimer(){
@@ -171,12 +178,12 @@ public class dobrykontroler {
             if (isSpaceChar(e.getCharacter().charAt(0))) {    //jezeli spacja to koniec słowa i sprawdzenie poprawnosci
                 textInputField.deletePreviousChar();
 
-                if (wordCounter + 1 < newContent.length)
-                    t[wordCounter + 1].setFill(Color.YELLOW);
+                if (wordCounter + 1 < liczby.length)
+                    t[wordCounter +1].setFill(Color.YELLOW);
 
-                if (wordCounter != newContent.length) {
+                if (wordCounter != liczby.length) {
 
-                    if (textInputField.getText().equals(newContent[wordCounter])) {
+                    if (textInputField.getText().equals(newContent[liczby[wordCounter]])) {
                         System.out.println("zgadza sie");
                         goodWords++;
                         t[wordCounter].setFill(Color.GREEN);
@@ -206,19 +213,22 @@ public class dobrykontroler {
                     mistakeCounter = 0;
                     isMistake = false;
                     letterCounter = 0;
-                    if (wordCounter != newContent.length) {
-                        currentLetterWord = newContent[wordCounter].toCharArray();
+                    if (wordCounter != liczby.length) {
+                        //currentLetterWord = newContent[wordCounter].toCharArray();
+                        currentLetterWord = newContent[liczby[wordCounter]].toCharArray();
                     }
                 }
-                if (wordCounter == newContent.length) {
+                if (wordCounter == liczby.length) {
                     typingEnd();
+                    //wordCounter--;
+                    //typingEndBeforeTimer();
                 }
 
             }
 
-            if (wordCounter != newContent.length && letterCounter < currentLetterWord.length) {
+            if (wordCounter != liczby.length && letterCounter < currentLetterWord.length) {
                 spellCheck(e);
-            } else if (wordCounter != newContent.length && textInputField.getText().length() > newContent[wordCounter].length()){
+            } else if (wordCounter != liczby.length && textInputField.getText().length() > newContent[liczby[wordCounter]].length()){
                 isMistake = true;
                 mistakeCounter++;
             }
@@ -233,11 +243,11 @@ public class dobrykontroler {
        if(!isFinished & !isTimeStarted){
            timer.schedule(task1, 1000,1000);
            isTimeStarted = true;
-           //("idzie timer z try");
+           //System.out.println("idzie timer z try");
        }
         if(!isFinished) {
             typingCheck(e);
-            //("idzie typingcheck");
+            //System.out.println("idzie typingcheck");
         }
 //        System.out.println("iloscBledow: "+mistakeCounter);
 //        System.out.println("czy bledy sa?: " + isMistake);
@@ -247,29 +257,29 @@ public class dobrykontroler {
         if (!isFinished){
             iloscSlowWczytanych += 9;
             textToWriteLabel.getChildren().clear();
-            if (iloscSlowWczytanych + 17 < newContent.length) {
+            if (iloscSlowWczytanych + 17 < liczby.length) {
                 for (int i = iloscSlowWczytanych; i < iloscSlowWczytanych + 18; i++) {
-                    t[i] = new Text(newContent[i] + "    ");
+                    t[i] = new Text(newContent[liczby[i]] + "   ");
                     textToWriteLabel.getChildren().add(t[i]);
                     t[i].setFill(Color.WHITE);
                     if (i == iloscSlowWczytanych + 8)
                         textToWriteLabel.getChildren().add(separator[0]);
                 }
                 t[wordCounter].setFill(Color.YELLOW);
-            } else if (iloscSlowWczytanych + 18 > newContent.length) {
-                for (int i = iloscSlowWczytanych; i < newContent.length; i++) {
-                    t[i] = new Text(newContent[i] + "    ");
+            } else if (iloscSlowWczytanych + 18 > liczby.length) {
+                for (int i = iloscSlowWczytanych; i < liczby.length; i++) {
+                    t[i] = new Text(newContent[liczby[i]] + "   ");
                     textToWriteLabel.getChildren().add(t[i]);
                     t[i].setFill(Color.WHITE);
                     if (i == iloscSlowWczytanych + 8)
                         textToWriteLabel.getChildren().add(separator[0]);
                 }
-                //t[wordCounter-1].setFill(Color.YELLOW);
+                t[wordCounter].setFill(Color.YELLOW);
             }
         }
     }
     public void lineLoader(int i){
-        t[i] = new Text(newContent[i] + "    ");
+        t[i] = new Text(newContent[liczby[i]] + "   ");
         textToWriteLabel.getChildren().add(t[i]);
         t[i].setFill(Color.WHITE);
     }
@@ -279,19 +289,25 @@ public class dobrykontroler {
         try {
             String content = new String(Files.readAllBytes(Paths.get(path)));
             newContent = content.split(" ");
-            currentLetterWord = newContent[wordCounter].toCharArray();
-            t = new Text[newContent.length];
+            for (int i = 0; i < newContent.length ; i++) {
+                System.out.println("indeks: "+i+"zawartosc: "+newContent[i]);
+            }
+            currentLetterWord = newContent[liczby[0]].toCharArray();
+            //currentLetterWord = newContent[0].toCharArray();
+
+            t = new Text[liczby.length];
+
             separator = new Text[1];
             separator[0] = new Text("\n");
 
-            if(newContent.length > 10){
+            if(liczby.length > 10){
                 for (int i = iloscSlowWczytanych; i < 18 +iloscSlowWczytanych; i++) {
                     lineLoader(i);
                     if(i==iloscSlowWczytanych+8)
                         textToWriteLabel.getChildren().add(separator[0]);
                 }
             }else{
-                for (int i = 0; i < newContent.length; i++) {
+                for (int i = 0; i < liczby.length; i++) {
                     lineLoader(i);
                 }
             }
@@ -306,7 +322,41 @@ public class dobrykontroler {
 
     public void setTeksto(ActionEvent event) throws IOException {
         resetAll();
-        loadTekst(file);
+        ///losowanie liczb
+        Random randNum = new Random();
+        Set<Integer> set = new LinkedHashSet<Integer>();
+
+        int index = 0;
+        while (set.size() < 50) {
+            set.add(randNum.nextInt(50));
+        }
+        liczby = new int[set.size()];
+        for(Integer i : set){
+            liczby[index++] = i;
+        }
+        //set.toArray(liczby);
+        //System.out.println("Random numbers with no duplicates = "+set);
+        //System.out.println("zerowa: "+liczby[0]);
+        //System.out.println("pierwsza:"+liczby[1]);
+
+        //String nazwapliczku = "src/sample/text_files/5.txt";
+        if(level <= 20) {
+            nazwapliczku = "src/sample/text_files/"+level+".txt";
+            loadTekst(nazwapliczku);
+            levelDisplay.setText("Lekcja " +level+ ".");
+        }else {
+            resetAll();
+            textToWriteLabel.getChildren().clear();
+            System.out.println("Koniec gry!");
+            //sekundnik.setText("");
+        }
+
+            System.out.println("level: "+level);
+
+
+//        String nazwapliczku = "src/sample/text_files/"+Integer.toString(level) + ".txt";
+        System.out.println(nazwapliczku);
+
         isFinished = false;
         timer.cancel();
         timer.purge();

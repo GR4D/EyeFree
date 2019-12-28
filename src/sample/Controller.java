@@ -61,7 +61,7 @@ public class Controller {
     private boolean isFinished = false;
     private int iloscSlowWczytanych = 0;
     public boolean isTimeStarted = false;
-    public int time = 12;
+    public int time = 60;
     public int minutes = (time % 3600) / 60;
     public int seconds= time % 60;
     public String file = "src/sample/1.txt";
@@ -205,10 +205,10 @@ public class Controller {
                     if (wordCounter != newContent.length) {
                         currentLetterWord = newContent[wordCounter].toCharArray();
                     }
+
                 }
                 if (wordCounter == newContent.length) {
                     typingEnd();
-                    //typingEndBeforeTimer();
                 }
 
             }

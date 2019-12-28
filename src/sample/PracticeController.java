@@ -4,9 +4,11 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
@@ -35,6 +37,15 @@ public class PracticeController {
     private Label testLabel;
     @FXML
     public Label sekundnik;
+    @FXML
+    public Label levelDisplay;
+    @FXML
+    private Button skipLevelButton;
+    @FXML
+    private Button setTekstButton;
+    @FXML
+    private Button switchToTestFromPracticeButton;
+
     private String tekst = "siema";
     private int wordCounter = 0;
     private int letterCounter = 0;
@@ -50,33 +61,36 @@ public class PracticeController {
     private boolean isFinished = false;
     private int iloscSlowWczytanych = 0;
     public boolean isTimeStarted = false;
-    public int time = 10;
+    public int time = 60;
     public int minutes = (time % 3600) / 60;
     public int seconds= time % 60;
     public String file = "src/sample/1.txt";
     public int level = 19;
     int[] liczby;
     String nazwapliczku;
+    public long start,end = 0;
+    public boolean isLevelPassed = false;
+    public long timePassed = 0;
 
     TimerTest task1 = new TimerTest();
     Timer timer = new Timer();
     Random random = new Random();
 
+
     class TimerTest extends TimerTask{
         @Override
         public void run(){
-            displayTimer();
-            if(time == 0){
-                timer.cancel();
-                timer.purge();
-                Platform.runLater(() -> typingEnd());
-            }
+//            displayTimer();
+//            if(time == 0){
+//                timer.cancel();
+//                timer.purge();
+//                Platform.runLater(() -> typingEnd());
+//            }
         }
     }
     @FXML
     public void reset(){
         resetAll();
-        //switchToPractice(ActionEvent);
     }
     @FXML
     public void displayTimer(){
@@ -86,7 +100,6 @@ public class PracticeController {
 
         Platform.runLater(() -> sekundnik.setText(String.format("%d:%02d", minutes, seconds )));
         System.out.println(String.format("%d:%02d", minutes, seconds ));
-        //System.out.println("wordCounter: " + wordCounter);
 
     }
     public void resetAll(){
@@ -103,6 +116,7 @@ public class PracticeController {
         time = 60;
         minutes = (time % 3600) / 60;
         seconds= time % 60;
+
 
 
     }
@@ -130,7 +144,6 @@ public class PracticeController {
 
     @FXML
     public void spellCheck(KeyEvent e){
-        System.out.println("litera: " + currentLetterWord[letterCounter]);
 
         if (e.getCharacter().charAt(0) == currentLetterWord[letterCounter] & !isSpaceChar(e.getCharacter().charAt(0)) ) {
             if (!isMistake) {
@@ -153,17 +166,26 @@ public class PracticeController {
     }
     @FXML
     public void typingEnd(){
+        testLabel.setVisible(true);
         textInputField.clear();
         textInputField.setEditable(false);
         isFinished = true;
         timer.cancel();
         timer.purge();
         time = 60;
-        level++;
+        end = System.nanoTime();
+        timePassed = (end-start)/1000000000;
+
+        System.out.println("różnica: "+((end-start)/1000000000));
         testLabel.setText("Koniec wpisywania! Poprawnych słów: " + goodWords + " Błędnych słów: " + errorWords);
         System.out.println("Poprawnych słów: " + goodWords);
         System.out.println("Błędnych słów: " + errorWords);
-        //resetAll();
+        if(timePassed < 120  && errorWords < 8) {
+            level++;
+        }else{
+            skipLevelButton.setVisible(true);
+            testLabel.setText("Zrobiłeś za dużo błędów lub pisanie zajęło ci zbyt dużo czasu.\nSpróbuj ponownie aby przejść do kolejnego poziomu.\nTwoim celem jest mniej niż 8 błędów i czas maksymalnie 120 sekund.");
+        }
     }
 
     public void typingEndBeforeTimer(){
@@ -177,7 +199,7 @@ public class PracticeController {
                 textInputField.deletePreviousChar();
 
                 if (wordCounter + 1 < liczby.length)
-                    t[wordCounter ].setFill(Color.YELLOW);
+                    t[wordCounter +1].setFill(Color.YELLOW);
 
                 if (wordCounter != liczby.length) {
 
@@ -190,7 +212,6 @@ public class PracticeController {
                         textInputField.clear();
                         if (wordCounter % 9 == 0) {
                             switchLine();
-                            System.out.println("ilosclowwczytanych: " + iloscSlowWczytanych);
                             t[iloscSlowWczytanych].setFill(Color.YELLOW);
                         }
                     } else {
@@ -204,24 +225,18 @@ public class PracticeController {
                             if(!isFinished) {
                                 switchLine();
                             }
-                            System.out.println("ilosclowwczytanych: " + iloscSlowWczytanych);
                         }
                     }
-
                     mistakeCounter = 0;
                     isMistake = false;
                     letterCounter = 0;
                     if (wordCounter != liczby.length) {
-                        //currentLetterWord = newContent[wordCounter].toCharArray();
                         currentLetterWord = newContent[liczby[wordCounter]].toCharArray();
                     }
                 }
                 if (wordCounter == liczby.length) {
                     typingEnd();
-                    //wordCounter--;
-                    //typingEndBeforeTimer();
                 }
-
             }
 
             if (wordCounter != liczby.length && letterCounter < currentLetterWord.length) {
@@ -236,19 +251,17 @@ public class PracticeController {
         }
     }
     @FXML
-    public void keyPressed(KeyEvent e) throws Exception{//typing
+    public void keyPressed(KeyEvent e) throws Exception{
 
-       if(!isFinished & !isTimeStarted){
-           timer.schedule(task1, 1000,1000);
-           isTimeStarted = true;
-           //System.out.println("idzie timer z try");
-       }
+        if(!isTimeStarted){
+            start = System.nanoTime();
+            System.out.println("nano start: "+start);
+            System.out.println("current millis: "+System.currentTimeMillis());
+            isTimeStarted = true;
+        }
         if(!isFinished) {
             typingCheck(e);
-            //System.out.println("idzie typingcheck");
         }
-//        System.out.println("iloscBledow: "+mistakeCounter);
-//        System.out.println("czy bledy sa?: " + isMistake);
     }
 
     public void switchLine() {
@@ -272,7 +285,7 @@ public class PracticeController {
                     if (i == iloscSlowWczytanych + 8)
                         textToWriteLabel.getChildren().add(separator[0]);
                 }
-                //t[wordCounter-1].setFill(Color.YELLOW);
+                t[wordCounter].setFill(Color.YELLOW);
             }
         }
     }
@@ -282,19 +295,14 @@ public class PracticeController {
         t[i].setFill(Color.WHITE);
     }
     public void loadTekst(String path) throws IOException {
-        //resetAll();
         textToWriteLabel.getChildren().clear();
         try {
             String content = new String(Files.readAllBytes(Paths.get(path)));
             newContent = content.split(" ");
             for (int i = 0; i < newContent.length ; i++) {
-                System.out.println("indeks: "+i+"zawartosc: "+newContent[i]);
             }
             currentLetterWord = newContent[liczby[0]].toCharArray();
-            //currentLetterWord = newContent[0].toCharArray();
-
             t = new Text[liczby.length];
-
             separator = new Text[1];
             separator[0] = new Text("\n");
 
@@ -317,13 +325,18 @@ public class PracticeController {
             System.out.println("Błąd ładowania pliku");
         }
     }
-
+    public void endPractice() {
+        skipLevelButton.setVisible(false);
+        setTekstButton.setVisible(false);
+        switchToTestFromPracticeButton.setVisible(true);
+        testLabel.setText("Przejdź do testu aby zmierzyć WPM.");
+        levelDisplay.setText("Ukończono ćwiczenia!");
+    }
     public void setTeksto(ActionEvent event) throws IOException {
+        if(isFinished){
+            testLabel.setVisible(false);
+        }
         resetAll();
-        System.out.println(random.nextInt(50));
-        System.out.println(random.nextInt(50));
-        System.out.println(random.nextInt(50));
-        System.out.println(random.nextInt(50));
         ///losowanie liczb
         Random randNum = new Random();
         Set<Integer> set = new LinkedHashSet<Integer>();
@@ -336,35 +349,40 @@ public class PracticeController {
         for(Integer i : set){
             liczby[index++] = i;
         }
-        //set.toArray(liczby);
-        System.out.println("Random numbers with no duplicates = "+set);
-        System.out.println("zerowa: "+liczby[0]);
-        System.out.println("pierwsza:"+liczby[1]);
 
-        //String nazwapliczku = "src/sample/text_files/5.txt";
         if(level <= 20) {
             nazwapliczku = "src/sample/text_files/"+level+".txt";
             loadTekst(nazwapliczku);
+            levelDisplay.setText("Lekcja " +level+ ".");
         }else {
             resetAll();
             textToWriteLabel.getChildren().clear();
+            textInputField.setVisible(false);
+            skipLevelButton.setVisible(false);
+            setTekstButton.setVisible(false);
+            testLabel.setVisible(true);
+            testLabel.setAlignment(Pos.CENTER);
+            switchToTestFromPracticeButton.setVisible(true);
+            testLabel.setText("Przejdź do testu aby zmierzyć WPM.");
+            levelDisplay.setMinSize(511,70);
+            levelDisplay.setLayoutX(310);
+            levelDisplay.setLayoutY(14);
+            levelDisplay.setAlignment(Pos.CENTER);
+            levelDisplay.setText("Ukończono ćwiczenia!");
             System.out.println("Koniec gry!");
-            //sekundnik.setText("");
         }
-
-            System.out.println("level: "+level);
-
-
-//        String nazwapliczku = "src/sample/text_files/"+Integer.toString(level) + ".txt";
-        System.out.println(nazwapliczku);
 
         isFinished = false;
         timer.cancel();
         timer.purge();
         task1 = new TimerTest();
         timer = new Timer();
-        testLabel.setText("");
-        sekundnik.setText(String.format("%d:%02d", minutes, seconds ));
+        //testLabel.setText("");
+    }
+    public void skipLevel(ActionEvent event) throws IOException {
+        level++;
+        setTeksto(event);
+        skipLevelButton.setVisible(false);
     }
 
     @FXML
@@ -417,16 +435,31 @@ public class PracticeController {
 
     @FXML
     private void switchToHelp(ActionEvent event) throws IOException {
-        Parent view2 = FXMLLoader.load(getClass().getResource("fxml/Help.fxml"));
+//        Parent view2 = FXMLLoader.load(getClass().getResource("fxml/Help.fxml"));
+//
+//        Scene scene2 = new Scene(view2);
+//
+//        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+//        window.setScene(scene2);
+//        window.show();
+//        if(isTimeStarted){
+//            timer.cancel();
+//            timer.purge();
+//        }
+        try{
+            Parent view2 = FXMLLoader.load(getClass().getResource("fxml/Help.fxml"));
 
-        Scene scene2 = new Scene(view2);
+            Scene scene2 = new Scene(view2);
 
-        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        window.setScene(scene2);
-        window.show();
-        if(isTimeStarted){
-            timer.cancel();
-            timer.purge();
+            Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            window.setScene(scene2);
+            window.show();
+            if(isTimeStarted){
+                timer.cancel();
+                timer.purge();
+            }
+        }catch (IOException e){
+            System.out.println("siema bykkkkkkkkkchuj: ");
         }
     }
 
