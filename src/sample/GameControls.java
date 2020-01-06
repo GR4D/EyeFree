@@ -4,82 +4,62 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
-import javafx.stage.Stage;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static java.lang.Character.isSpaceChar;
 
-//import javax.swing.text.Style;
-
-public class PracticeController_good {
-
-    @FXML
-    private TextArea textInputField;
-    @FXML
-    private TextFlow textToWriteLabel;
-    @FXML
-    private Label testLabel;
-    @FXML
-    public Label sekundnik;
-    @FXML
-    public Label levelDisplay;
-    private String tekst = "siema";
-    private int wordCounter = 0;
-    private int letterCounter = 0;
-    String[] newContent;
-    char[] currentLetterWord;
-    private int goodWords = 0;
-    private int errorWords = 0;
-    private boolean isBackspaceKey = false;
-    private Text[] t;
-    private Text[] separator;
-    private boolean isMistake = false;
-    private int mistakeCounter = 0;
-    private boolean isFinished = false;
-    private int iloscSlowWczytanych = 0;
-    public boolean isTimeStarted = false;
-    public int time = 60;
-    public int minutes = (time % 3600) / 60;
-    public int seconds= time % 60;
-    public String file = "src/sample/1.txt";
-    public int level = 1;
-    int[] liczby;
-    String nazwapliczku;
-
+/**
+ * Klasa zawierajaca wszystkie metody sterujace rozgrywka
+ */
+public class GameControls extends GameWindow{
+    /**
+     * tworzy nowe zadanie dla timera
+     */
     TimerTest task1 = new TimerTest();
+    /**
+     * nowy timer
+     */
     Timer timer = new Timer();
-    Random random = new Random();
 
-    class TimerTest extends TimerTask{
+    /**
+     * Klasa definiujaca timer - zadanie ktore co sekunde odejmuje czas
+     */
+    class TimerTest extends TimerTask {
         @Override
         public void run(){
             displayTimer();
             if(time == 0){
                 timer.cancel();
                 timer.purge();
-                Platform.runLater(() -> typingEnd());
+                Platform.runLater(() -> {
+                    try {
+                        typingEndTest();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
             }
         }
     }
-    @FXML
-    public void reset(){
-        resetAll();
-        //switchToPractice(ActionEvent);
-    }
+
+    /**
+     * Wyswietlanie stanu timera
+     */
     @FXML
     public void displayTimer(){
         time--;
@@ -87,10 +67,11 @@ public class PracticeController_good {
         seconds= time % 60;
 
         Platform.runLater(() -> sekundnik.setText(String.format("%d:%02d", minutes, seconds )));
-        System.out.println(String.format("%d:%02d", minutes, seconds ));
-        //System.out.println("wordCounter: " + wordCounter);
-
     }
+
+    /**
+     * Resetowanie wszystkich pol do stanu sprzed rozgrywki aby rozpoczac ponowne wprowadzanie danych
+     */
     public void resetAll(){
         wordCounter = 0;
         letterCounter = 0;
@@ -99,15 +80,17 @@ public class PracticeController_good {
         isBackspaceKey = false;
         isMistake = false;
         mistakeCounter = 0;
-        iloscSlowWczytanych = 0;
-//        isFinished = false;
+        iloscSlowWczytanych = 0;;
         isTimeStarted =  false;
         time = 60;
         minutes = (time % 3600) / 60;
         seconds= time % 60;
-
-
     }
+
+    /**
+     * Metoda sprawdzajaca czy wcisnieto backspace - sluzy do odpowiedniej orientacji aktualnego znaku w przypadku kasowania bledow
+     * @param e wcisniety klawisz
+     */
     @FXML
     public void isBackspace(KeyEvent e) {
 
@@ -130,48 +113,37 @@ public class PracticeController_good {
         }
     }
 
+    /**
+     * Sprawdzanie poprawnosci wprowadzenia pojedzynczego znaku - glownie do zmieniania kolorow tekstu i obliczania WPM
+     * @param e wcisniety klawisz
+     */
     @FXML
     public void spellCheck(KeyEvent e){
-        System.out.println("litera: " + currentLetterWord[letterCounter]);
 
         if (e.getCharacter().charAt(0) == currentLetterWord[letterCounter] & !isSpaceChar(e.getCharacter().charAt(0)) ) {
             if (!isMistake) {
-                System.out.println("ruwna sie ta litera");
+               //prawidlowa litera
                 t[wordCounter].setFill(Color.YELLOW);
+                goodLettersWpm++;
             } else{
                 mistakeCounter++;
             }
 
         } else if (e.getCharacter().charAt(0) != currentLetterWord[letterCounter] & !isSpaceChar(e.getCharacter().charAt(0)) ) {
-            System.out.println("nieruwna sie ta litera");
+            //nieprawidlowa litera
             t[wordCounter].setFill(Color.RED);
             isMistake = true;
             mistakeCounter++;
-            System.out.println("iloscBledowjakichstam: "+ mistakeCounter);
         }
 
         if (!isSpaceChar(e.getCharacter().charAt(0)))
             letterCounter++;
     }
-    @FXML
-    public void typingEnd(){
-        textInputField.clear();
-        textInputField.setEditable(false);
-        isFinished = true;
-        timer.cancel();
-        timer.purge();
-        time = 60;
-        level++;
-        testLabel.setText("Koniec wpisywania! Poprawnych słów: " + goodWords + " Błędnych słów: " + errorWords);
-        System.out.println("Poprawnych słów: " + goodWords);
-        System.out.println("Błędnych słów: " + errorWords);
-        //resetAll();
-    }
 
-    public void typingEndBeforeTimer(){
-        timer.cancel();
-        typingEnd();
-    }
+    /**
+     * Glowna metoda sprawdzajaca poprawnosc wpisanego slowa. Kasuje wprowadzona spacje i sprawdza slowo. Koloruje tekst. Przechodzi do nastepnego slowa.
+     * @param e wcisniety klawisz - do sprawdzania czy spacja
+     */
     @FXML
     public void typingCheck(KeyEvent e){
         if(!isBackspaceKey) {
@@ -184,7 +156,7 @@ public class PracticeController_good {
                 if (wordCounter != liczby.length) {
 
                     if (textInputField.getText().equals(newContent[liczby[wordCounter]])) {
-                        System.out.println("zgadza sie");
+                       //poprawne slowo
                         goodWords++;
                         t[wordCounter].setFill(Color.GREEN);
                         wordCounter++;
@@ -192,11 +164,10 @@ public class PracticeController_good {
                         textInputField.clear();
                         if (wordCounter % 9 == 0) {
                             switchLine();
-                            System.out.println("ilosclowwczytanych: " + iloscSlowWczytanych);
                             t[iloscSlowWczytanych].setFill(Color.YELLOW);
                         }
                     } else {
-                        System.out.println("nie zgadza sie");
+                        //niepoprawne slowo
                         errorWords++;
                         t[wordCounter].setFill(Color.RED);
                         wordCounter++;
@@ -206,24 +177,26 @@ public class PracticeController_good {
                             if(!isFinished) {
                                 switchLine();
                             }
-                            System.out.println("ilosclowwczytanych: " + iloscSlowWczytanych);
                         }
                     }
-
                     mistakeCounter = 0;
                     isMistake = false;
                     letterCounter = 0;
                     if (wordCounter != liczby.length) {
-                        //currentLetterWord = newContent[wordCounter].toCharArray();
                         currentLetterWord = newContent[liczby[wordCounter]].toCharArray();
                     }
                 }
-                if (wordCounter == liczby.length) {
-                    typingEnd();
-                    //wordCounter--;
-                    //typingEndBeforeTimer();
+                if (wordCounter == liczby.length) {//koniec wpisywania
+                    if(!testOrPractice) {
+                        try {
+                            typingEndTest();
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                    }else{
+                        typingEndPractice();
+                    }
                 }
-
             }
 
             if (wordCounter != liczby.length && letterCounter < currentLetterWord.length) {
@@ -237,22 +210,11 @@ public class PracticeController_good {
             t[wordCounter].setFill(Color.RED);
         }
     }
-    @FXML
-    public void keyPressed(KeyEvent e) throws Exception{//typing
 
-       if(!isFinished & !isTimeStarted){
-           timer.schedule(task1, 1000,1000);
-           isTimeStarted = true;
-           //System.out.println("idzie timer z try");
-       }
-        if(!isFinished) {
-            typingCheck(e);
-            //System.out.println("idzie typingcheck");
-        }
-//        System.out.println("iloscBledow: "+mistakeCounter);
-//        System.out.println("czy bledy sa?: " + isMistake);
-    }
-
+    /**
+     * Metoda umozliwiajaca wczytywanie tekstu do textToWriteLabel partiami. Wczytuje dwie linie a po wprowadzeniu pierwszej druga zajmuje jej miejsce a wczytywana jest kolejna.
+     * Umozliwia to plynna rozgrywke i nie przytlacza iloscia tekstu do wprowadzenia oraz pozwala na lepsze skupienie.
+     */
     public void switchLine() {
         if (!isFinished){
             iloscSlowWczytanych += 9;
@@ -278,136 +240,168 @@ public class PracticeController_good {
             }
         }
     }
-    public void lineLoader(int i){
+
+    /**
+     * Koniec Testu. Kasowanie timera, obliczanie wpm (wpm = poprawnie wprowadzone litery / 5 ,poniewaz uznaje sie 5 za srednia dlugosc slowa), wyswietlanie wynikow oraz zapisanie ich do pliku.
+     * @throws IOException blad pliku
+     */
+    @FXML
+    public void typingEndTest() throws IOException{//zostawic
+        resultsLabel.setVisible(true);
+        textInputField.clear();
+        textInputField.setVisible(false);
+        isFinished = true;
+        timer.cancel();
+        timer.purge();
+        time = 60;
+        wpm = goodLettersWpm / 5;
+
+        resultsLabel.setText("Koniec wpisywania! Poprawnych słów: " + goodWords + " Błędnych słów: " + errorWords + "\nWPM: " + wpm);
+
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+
+        BufferedWriter writer = new BufferedWriter(
+                new FileWriter("wyniki.txt", true)  //Set true for append mode
+        );
+        writer.newLine();   //Add new line
+        writer.write(dtf.format(now) + " WPM: " + wpm);
+        writer.close();
+
+    }
+
+    /**
+     * Koniec jednego poziomu cwiczen. Sprawdzanie czy nie popelniono wiecej niz 8 bledow i czy czas pisania byl krotszy niz 2 minuty. Wyswietlanie wynikow.
+     */
+    @FXML
+    public void typingEndPractice(){//zostawic
+        resultsLabel.setVisible(true);
+        textInputField.clear();
+        textInputField.setEditable(false);
+        isFinished = true;
+        end = System.nanoTime();
+        timePassed = (end-start)/1000000000;
+
+        resultsLabel.setText("Koniec wpisywania! Poprawnych słów: " + goodWords + " Błędnych słów: " + errorWords);
+
+        if(timePassed < 120  && errorWords < 8) {
+            level++;
+        }else{
+            skipLevelButton.setVisible(true);
+            resultsLabel.setText("Zrobiłeś za dużo błędów lub pisanie zajęło ci zbyt dużo czasu.\nSpróbuj ponownie aby przejść do kolejnego poziomu.\nTwoim celem jest mniej niż 8 błędów i czas maksymalnie 120 sekund.");
+        }
+    }
+
+    /**
+     * Wczytywanie pojedynczego losowego slowa z newContent do Text[].
+     * @param i indeks danego slowa
+     */
+    public void wordLoader(int i){
         t[i] = new Text(newContent[liczby[i]] + "   ");
         textToWriteLabel.getChildren().add(t[i]);
         t[i].setFill(Color.WHITE);
     }
-    public void loadTekst(String path) throws IOException {
-        //resetAll();
+
+    /**
+     * Poczatkowy odczyt slow z pliku. Tworzenie Text[], utawianie czasu i widoku okna. Gotowosc do wpisywania.
+     * @param path sciezka do pliku
+     */
+    public void loadTekst(String path) {
         textToWriteLabel.getChildren().clear();
         try {
             String content = new String(Files.readAllBytes(Paths.get(path)));
             newContent = content.split(" ");
             for (int i = 0; i < newContent.length ; i++) {
-                System.out.println("indeks: "+i+"zawartosc: "+newContent[i]);
             }
             currentLetterWord = newContent[liczby[0]].toCharArray();
-            //currentLetterWord = newContent[0].toCharArray();
-
             t = new Text[liczby.length];
-
             separator = new Text[1];
             separator[0] = new Text("\n");
 
             if(liczby.length > 10){
                 for (int i = iloscSlowWczytanych; i < 18 +iloscSlowWczytanych; i++) {
-                    lineLoader(i);
+                    wordLoader(i);
                     if(i==iloscSlowWczytanych+8)
                         textToWriteLabel.getChildren().add(separator[0]);
                 }
             }else{
                 for (int i = 0; i < liczby.length; i++) {
-                    lineLoader(i);
+                    wordLoader(i);
                 }
             }
             t[0].setFill(Color.YELLOW);
-            System.out.println("Poprawnie załadowano plik.");
             textInputField.setEditable(true);
+            textInputField.setVisible(true);
             textInputField.clear();
+            if(!testOrPractice){
+                sekundnik.setVisible(true);
+                sekundnik.setText("1:00");
+            }
+
         } catch (IOException e) {
-            System.out.println("Błąd ładowania pliku");
+            //System.out.println("Błąd ładowania pliku");
         }
     }
 
-    public void setTeksto(ActionEvent event) throws IOException {
-        resetAll();
-        ///losowanie liczb
-        Random randNum = new Random();
-        Set<Integer> set = new LinkedHashSet<Integer>();
-
-        int index = 0;
-        while (set.size() < 50) {
-            set.add(randNum.nextInt(50));
+    /**
+     * Odczyt zapisanych wynikow
+     */
+    public void readScores() {
+        scoresLabel.setText("");
+        try {
+            String wyniki = new String (Files.readAllBytes(Paths.get("wyniki.txt")));
+            scoresLabel.setText("Wyniki: \n" + wyniki);
+            System.out.println("zap[isano wyniki ");
+        }catch (IOException e){
+            System.out.println("blad: "+e);
         }
-        liczby = new int[set.size()];
-        for(Integer i : set){
-            liczby[index++] = i;
-        }
-        //set.toArray(liczby);
-        //System.out.println("Random numbers with no duplicates = "+set);
-        //System.out.println("zerowa: "+liczby[0]);
-        //System.out.println("pierwsza:"+liczby[1]);
-
-        //String nazwapliczku = "src/sample/text_files/5.txt";
-        if(level <= 20) {
-            nazwapliczku = "src/sample/text_files/"+level+".txt";
-            loadTekst(nazwapliczku);
-            levelDisplay.setText("Lekcja " +level+ ".");
-        }else {
-            resetAll();
-            textToWriteLabel.getChildren().clear();
-            System.out.println("Koniec gry!");
-            //sekundnik.setText("");
-        }
-
-            System.out.println("level: "+level);
-
-
-//        String nazwapliczku = "src/sample/text_files/"+Integer.toString(level) + ".txt";
-        System.out.println(nazwapliczku);
-
-        isFinished = false;
-        timer.cancel();
-        timer.purge();
-        task1 = new TimerTest();
-        timer = new Timer();
-        testLabel.setText("");
-        sekundnik.setText(String.format("%d:%02d", minutes, seconds ));
     }
 
+    /**
+     * Metoda umozliwiajaca wyczyszczenie zapisanych wynikow.
+     */
+    public void deleteScores(){
+        try
+        {
+            File f= new File("wyniki.txt");           //file to be delete
+            if(f.delete())
+                System.out.println(f.getName() + " deleted");   //getting and printing the file name
+            else
+                System.out.println("failed");
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    /**
+     * Wyjscie z gry
+     */
     @FXML
-    private void switchToPractice(ActionEvent event) throws IOException, InterruptedException {
-        Parent view2 = FXMLLoader.load(getClass().getResource("fxml/Practice.fxml"));
-
-        Scene scene2 = new Scene(view2);
-
-        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        window.setScene(scene2);
-        window.show();
-        if(isTimeStarted){
-            timer.cancel();
-            timer.purge();
-        }
+    private void quit(){
+        System.exit(0);
     }
 
+    /**
+     * Przejscie do okna HOME
+     * @param event ruch myszka
+     * @throws IOException blad ladowania pliku .fxml
+     */
     @FXML
     private void switchToHome(ActionEvent event) throws IOException {
+
         Parent view2 = FXMLLoader.load(getClass().getResource("fxml/Home.fxml"));
 
-        Scene scene2 = new Scene(view2);
-
-        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        window.setScene(scene2);
-        window.show();
+        movableScene(view2,event);
         if(isTimeStarted){
             timer.cancel();
             timer.purge();
         }
-    }
-    @FXML
-    private void quit(ActionEvent event) throws IOException{
-        System.exit(0);
     }
     @FXML
     private void switchToAbout(ActionEvent event) throws IOException {
         Parent view2 = FXMLLoader.load(getClass().getResource("fxml/About.fxml"));
 
-        Scene scene2 = new Scene(view2);
-
-        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        window.setScene(scene2);
-        window.show();
+        movableScene(view2,event);
         if(isTimeStarted){
             timer.cancel();
             timer.purge();
@@ -416,35 +410,29 @@ public class PracticeController_good {
 
     @FXML
     private void switchToHelp(ActionEvent event) throws IOException {
-        Parent view2 = FXMLLoader.load(getClass().getResource("fxml/Help.fxml"));
+        try{
+            Parent view2 = FXMLLoader.load(getClass().getResource("fxml/Help.fxml"));
 
-        Scene scene2 = new Scene(view2);
+            movableScene(view2,event);
 
-        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        window.setScene(scene2);
-        window.show();
-        if(isTimeStarted){
-            timer.cancel();
-            timer.purge();
+            if(isTimeStarted){
+                timer.cancel();
+                timer.purge();
+            }
+        }catch (IOException e){
         }
+    }
+
+    @FXML
+    private void switchToPractice(ActionEvent event) throws IOException, InterruptedException {
+        Parent view2 = FXMLLoader.load(getClass().getResource("fxml/Practice.fxml"));
+        movableScene(view2,event);
     }
 
     @FXML
     private void switchToTest(ActionEvent event) throws IOException {
         Parent view2 = FXMLLoader.load(getClass().getResource("fxml/Test.fxml"));
 
-        Scene scene2 = new Scene(view2);
-
-        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        window.setScene(scene2);
-        window.show();
-        if(isTimeStarted){
-            timer.cancel();
-            timer.purge();
-        }
-    }
-
-    void initialize() {
-
+        movableScene(view2,event);
     }
 }

@@ -10,13 +10,12 @@
 <?import javafx.scene.paint.LinearGradient?>
 <?import javafx.scene.paint.Stop?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.GameControls">
    <children>
       <VBox prefHeight="720.0" prefWidth="100.0" style="-fx-background-color: #393351;" stylesheets="@../../css/fullpackstyling.css">
          <children>
-            <Button fx:id="home" contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#switchToHome" prefHeight="89.0" prefWidth="100.0" styleClass="button3" stylesheets="@../../css/fullpackstyling.css" text="HOME">
+            <Button fx:id="home" contentDisplay="BOTTOM" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#switchToHome" prefHeight="87.0" prefWidth="100.0" styleClass="button3" stylesheets="@../../css/fullpackstyling.css" text="HOME">
                <graphic>
                   <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -42,7 +41,7 @@
                   </LinearGradient>
                </textFill>
             </Button>
-            <Button fx:id="help" contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#switchToHelp" prefHeight="89.0" prefWidth="100.0" styleClass="button3" stylesheets="@../../css/fullpackstyling.css" text="HELP">
+            <Button fx:id="help" contentDisplay="BOTTOM" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#switchToHelp" prefHeight="87.0" prefWidth="100.0" styleClass="button3" stylesheets="@../../css/fullpackstyling.css" text="HELP">
                <graphic>
                   <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -62,7 +61,7 @@
                   </LinearGradient>
                </textFill>
             </Button>
-            <Button fx:id="about" contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#switchToAbout" prefHeight="87.0" prefWidth="100.0" styleClass="button3" text="ABOUT">
+            <Button fx:id="about" contentDisplay="BOTTOM" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#switchToAbout" prefHeight="87.0" prefWidth="100.0" styleClass="button3" text="ABOUT">
                <font>
                   <Font name="SansSerif Regular" size="18.0" />
                </font>
@@ -82,7 +81,7 @@
                   </LinearGradient>
                </textFill>
             </Button>
-            <Button fx:id="about1" contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#quit" prefHeight="87.0" prefWidth="100.0" styleClass="button3">
+            <Button fx:id="about1" contentDisplay="BOTTOM" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#quit" prefHeight="87.0" prefWidth="100.0" styleClass="button3">
                <font>
                   <Font name="SansSerif Regular" size="18.0" />
                </font>
@@ -102,14 +101,43 @@
                   </LinearGradient>
                </textFill>
                <VBox.margin>
-                  <Insets top="115.0" />
+                  <Insets top="143.0" />
                </VBox.margin>
             </Button>
          </children>
       </VBox>
       <Pane layoutX="100.0" prefHeight="720.0" prefWidth="1180.0" style="-fx-background-color: #2F2B43;">
          <children>
-            <Text fill="WHITE" layoutX="196.0" layoutY="132.0" strokeType="OUTSIDE" strokeWidth="0.0" text="HELP" />
+            <ImageView fitHeight="211.0" fitWidth="351.0" layoutX="825.0" layoutY="50.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../resources/rece.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="305.0" fitWidth="904.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../resources/keyboard.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="211.0" fitWidth="545.0" layoutY="338.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../resources/why.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="185.0" fitWidth="597.0" layoutX="578.0" layoutY="354.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../resources/why2.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="156.0" fitWidth="613.0" layoutX="14.0" layoutY="536.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../resources/why3.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="198.0" fitWidth="588.0" layoutX="595.0" layoutY="508.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../resources/why4.png" />
+               </image>
+            </ImageView>
          </children>
       </Pane>
    </children>

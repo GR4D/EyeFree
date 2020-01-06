@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -13,11 +14,11 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.GameControls">
    <children>
       <VBox prefHeight="720.0" prefWidth="100.0" style="-fx-background-color: #393351;" stylesheets="@../../css/fullpackstyling.css">
          <children>
-            <Button fx:id="home" contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#switchToHome" prefHeight="89.0" prefWidth="100.0" styleClass="button3" stylesheets="@../../css/fullpackstyling.css" text="HOME">
+            <Button fx:id="home" contentDisplay="BOTTOM" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#switchToHome" prefHeight="87.0" prefWidth="100.0" styleClass="button3" stylesheets="@../../css/fullpackstyling.css" text="HOME">
                <graphic>
                   <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -43,7 +44,7 @@
                   </LinearGradient>
                </textFill>
             </Button>
-            <Button fx:id="help" contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#switchToHelp" prefHeight="89.0" prefWidth="100.0" styleClass="button3" stylesheets="@../../css/fullpackstyling.css" text="HELP">
+            <Button fx:id="help" contentDisplay="BOTTOM" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#switchToHelp" prefHeight="87.0" prefWidth="100.0" styleClass="button3" stylesheets="@../../css/fullpackstyling.css" text="HELP">
                <graphic>
                   <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -63,7 +64,7 @@
                   </LinearGradient>
                </textFill>
             </Button>
-            <Button fx:id="about" contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#switchToAbout" prefHeight="87.0" prefWidth="100.0" styleClass="button3" text="ABOUT">
+            <Button fx:id="about" contentDisplay="BOTTOM" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#switchToAbout" prefHeight="87.0" prefWidth="100.0" styleClass="button3" text="ABOUT">
                <font>
                   <Font name="SansSerif Regular" size="18.0" />
                </font>
@@ -83,7 +84,7 @@
                   </LinearGradient>
                </textFill>
             </Button>
-            <Button fx:id="about1" contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#quit" prefHeight="87.0" prefWidth="100.0" styleClass="button3">
+            <Button fx:id="about1" contentDisplay="BOTTOM" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#quit" prefHeight="87.0" prefWidth="100.0" styleClass="button3">
                <font>
                   <Font name="SansSerif Regular" size="18.0" />
                </font>
@@ -103,14 +104,14 @@
                   </LinearGradient>
                </textFill>
                <VBox.margin>
-                  <Insets top="115.0" />
+                  <Insets top="143.0" />
                </VBox.margin>
             </Button>
          </children>
       </VBox>
       <Pane layoutX="100.0" prefHeight="720.0" prefWidth="1180.0" style="-fx-background-color: #2F2B43;">
          <children>
-            <Button fx:id="help2" alignment="TOP_CENTER" centerShape="false" layoutX="115.0" layoutY="235.0" mnemonicParsing="false" onAction="#switchToHelp" prefHeight="250.0" prefWidth="250.0" styleClass="button2" stylesheets="@../../css/fullpackstyling.css" textFill="RED">
+            <Button fx:id="help2" alignment="TOP_CENTER" centerShape="false" focusTraversable="false" layoutX="115.0" layoutY="235.0" mnemonicParsing="false" onAction="#switchToHelp" prefHeight="250.0" prefWidth="250.0" styleClass="button2" stylesheets="@../../css/fullpackstyling.css" textFill="RED">
                <font>
                   <Font size="33.0" />
                </font>
@@ -133,7 +134,7 @@
                   <Insets top="25.0" />
                </padding>
             </Button>
-            <Button fx:id="practice" alignment="TOP_CENTER" centerShape="false" layoutX="465.0" layoutY="235.0" mnemonicParsing="false" onAction="#switchToPractice" prefHeight="250.0" prefWidth="250.0" styleClass="button2" stylesheets="@../../css/fullpackstyling.css" textFill="RED">
+            <Button fx:id="practice" alignment="TOP_CENTER" centerShape="false" focusTraversable="false" layoutX="465.0" layoutY="235.0" mnemonicParsing="false" onAction="#switchToPractice" prefHeight="250.0" prefWidth="250.0" styleClass="button2" stylesheets="@../../css/fullpackstyling.css" textFill="RED">
                <font>
                   <Font size="33.0" />
                </font>
@@ -156,7 +157,7 @@
                   <Insets top="25.0" />
                </padding>
             </Button>
-            <Button fx:id="test" alignment="TOP_CENTER" centerShape="false" layoutX="824.0" layoutY="235.0" mnemonicParsing="false" onAction="#switchToTest" prefHeight="250.0" prefWidth="250.0" styleClass="button2" stylesheets="@../../css/fullpackstyling.css" textFill="RED">
+            <Button fx:id="test" alignment="TOP_CENTER" centerShape="false" focusTraversable="false" layoutX="824.0" layoutY="235.0" mnemonicParsing="false" onAction="#switchToTest" prefHeight="250.0" prefWidth="250.0" styleClass="button2" stylesheets="@../../css/fullpackstyling.css" textFill="RED">
                <font>
                   <Font size="33.0" />
                </font>
@@ -233,6 +234,11 @@
                   <Image url="@../../resources/test.png" />
                </image>
             </ImageView>
+            <Label layoutX="455.0" layoutY="14.0" prefHeight="132.0" prefWidth="270.0" text="Eye Free" textFill="#c5a1ff">
+               <font>
+                  <Font size="69.0" />
+               </font>
+            </Label>
          </children>
       </Pane>
    </children>

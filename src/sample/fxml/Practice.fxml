@@ -18,7 +18,7 @@
    <children>
       <VBox prefHeight="720.0" prefWidth="100.0" style="-fx-background-color: #393351;" stylesheets="@../../css/fullpackstyling.css">
          <children>
-            <Button fx:id="home" contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#switchToHome" prefHeight="89.0" prefWidth="100.0" styleClass="button3" stylesheets="@../../css/fullpackstyling.css" text="HOME">
+            <Button fx:id="home" contentDisplay="BOTTOM" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#switchToHome" prefHeight="87.0" prefWidth="100.0" styleClass="button3" stylesheets="@../../css/fullpackstyling.css" text="HOME">
                <graphic>
                   <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -44,7 +44,7 @@
                   </LinearGradient>
                </textFill>
             </Button>
-            <Button fx:id="help" contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#switchToHelp" prefHeight="89.0" prefWidth="100.0" styleClass="button3" stylesheets="@../../css/fullpackstyling.css" text="HELP">
+            <Button fx:id="help" contentDisplay="BOTTOM" focusTraversable="false" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#switchToHelp" prefHeight="87.0" prefWidth="100.0" styleClass="button3" stylesheets="@../../css/fullpackstyling.css" text="HELP">
                <graphic>
                   <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -64,7 +64,7 @@
                   </LinearGradient>
                </textFill>
             </Button>
-            <Button fx:id="about" contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#switchToAbout" prefHeight="87.0" prefWidth="100.0" styleClass="button3" text="ABOUT">
+            <Button fx:id="about" contentDisplay="BOTTOM" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#switchToAbout" prefHeight="87.0" prefWidth="100.0" styleClass="button3" text="ABOUT">
                <font>
                   <Font name="SansSerif Regular" size="18.0" />
                </font>
@@ -84,7 +84,7 @@
                   </LinearGradient>
                </textFill>
             </Button>
-            <Button fx:id="about1" contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#quit" prefHeight="87.0" prefWidth="100.0" styleClass="button3">
+            <Button fx:id="about1" contentDisplay="BOTTOM" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#quit" prefHeight="87.0" prefWidth="100.0" styleClass="button3">
                <font>
                   <Font name="SansSerif Regular" size="18.0" />
                </font>
@@ -104,19 +104,26 @@
                   </LinearGradient>
                </textFill>
                <VBox.margin>
-                  <Insets top="115.0" />
+                  <Insets top="143.0" />
                </VBox.margin>
             </Button>
          </children>
       </VBox>
       <Pane layoutX="100.0" prefHeight="720.0" prefWidth="1180.0" style="-fx-background-color: #2F2B43;">
          <children>
-            <TextArea fx:id="textInputField" editable="false" layoutX="491.0" layoutY="211.0" maxHeight="56.0" minWidth="15.0" onKeyPressed="#isBackspace" onKeyTyped="#keyPressed" prefHeight="36.0" prefWidth="196.0" promptText="Pisz tutaj...">
+            <TextArea fx:id="textInputField" editable="false" layoutX="491.0" layoutY="211.0" maxHeight="56.0" minWidth="15.0" onKeyPressed="#isBackspace" onKeyTyped="#keyPressed" prefHeight="36.0" prefWidth="196.0" promptText="Pisz tutaj..." visible="false">
                <font>
                   <Font size="18.0" />
                </font></TextArea>
-            <Button fx:id="setTekstButton" layoutX="869.0" layoutY="211.0" mnemonicParsing="false" onAction="#setTeksto" prefHeight="28.0" prefWidth="73.0" text="slowa" />
-            <Label fx:id="testLabel" layoutX="235.0" layoutY="208.0" prefHeight="91.0" prefWidth="634.0" style="-fx-background-color: #2F2B43;" textFill="#c5a1ff" visible="false">
+            <Button fx:id="setTekstButton" focusTraversable="false" layoutX="869.0" layoutY="201.0" mnemonicParsing="false" onAction="#setTeksto" prefHeight="28.0" prefWidth="73.0" styleClass="button5" stylesheets="@../../css/fullpackstyling.css">
+               <graphic>
+                  <ImageView fitHeight="54.0" fitWidth="41.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../resources/reload.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+            <Label fx:id="resultsLabel" layoutX="235.0" layoutY="208.0" prefHeight="91.0" prefWidth="634.0" style="-fx-background-color: #2F2B43;" textFill="#c5a1ff" visible="false">
                <font>
                   <Font size="20.0" />
                </font></Label>
@@ -142,8 +149,33 @@
                   <Font size="48.0" />
                </font>
             </Label>
-            <Button fx:id="skipLevelButton" layoutX="869.0" layoutY="253.0" mnemonicParsing="false" onAction="#skipLevel" prefHeight="28.0" prefWidth="73.0" text="Skip" visible="false" />
-            <Button fx:id="switchToTestFromPracticeButton" layoutX="869.0" layoutY="225.0" mnemonicParsing="false" onAction="#switchToTest" prefHeight="28.0" prefWidth="73.0" text="Test" visible="false" />
+            <Button fx:id="switchToTestFromPracticeButton" focusTraversable="false" layoutX="869.0" layoutY="223.0" mnemonicParsing="false" onAction="#switchToTest" prefHeight="16.0" prefWidth="73.0" styleClass="button5" stylesheets="@../../css/fullpackstyling.css" visible="false">
+               <graphic>
+                  <ImageView fitHeight="53.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../resources/test.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+            <Button fx:id="skipLevelButton" focusTraversable="false" layoutX="869.0" layoutY="257.0" mnemonicParsing="false" onAction="#skipLevel" prefHeight="28.0" prefWidth="73.0" styleClass="button5" stylesheets="@../../css/fullpackstyling.css" visible="false">
+               <graphic>
+                  <ImageView fitHeight="54.0" fitWidth="41.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../resources/skip.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Label fx:id="info2" layoutX="412.0" layoutY="206.0" prefHeight="32.0" prefWidth="447.0" text="Naciśnij przycisk aby rozpocząć" textFill="#c5a1ff">
+               <font>
+                  <Font name="Segoe UI" size="32.0" />
+               </font>
+            </Label>
+            <Label fx:id="info1" layoutX="383.0" layoutY="14.0" prefHeight="70.0" prefWidth="413.0" text="Część ćwiczeniowa" textFill="#c5a1ff">
+               <font>
+                  <Font name="Segoe UI" size="45.0" />
+               </font>
+            </Label>
          </children>
       </Pane>
    </children>
